@@ -535,48 +535,43 @@ def scene_define(t, f):
     out.append(splash_parts(t, EV["splash1"], gx, gy - 60, 48, 11, gy + 80))
     # dictionary card
     if t >= EV["card"]:
-        p = e_back(prog(t, EV["card"], EV["card"] + 0.4)); cy = lerp(-420, 120, p)
+        p = e_back(prog(t, EV["card"], EV["card"] + 0.4)); cy = lerp(-420, 175, p)
         out.append(f'<g transform="translate(90,{cy:.1f}) rotate(-2)">'
                    '<rect x="12" y="16" width="900" height="420" rx="36" fill="#2A120A"/>'
                    '<rect x="0" y="0" width="900" height="420" rx="36" fill="#FFF8EC" stroke="#2A120A" stroke-width="8"/>')
         out.append(stext(450, 95, "ГРЯЗНУЛЬКА", fit("ГРЯЗНУЛЬКА", 800, 120), fill="#6B4226", sw=0, shadow=False))
-        out.append(stext(450, 180, "сущ., разг., мем", 40, fill="#9A7B66", sw=0, shadow=False))
+        out.append(stext(450, 180, "сленг, мем осени 2026", 40, fill="#9A7B66", sw=0, shadow=False))
         out.append(f'<line x1="70" y1="225" x2="830" y2="225" stroke="#E5D3BE" stroke-width="5"/>')
-        out.append(stext(450, 285, "чумазик, уверенный,", 54, fill="#2A120A", sw=0, shadow=False))
-        out.append(stext(450, 360, "что он 10/10", 54, fill="#2A120A", sw=0, shadow=False))
+        out.append(stext(450, 285, "= BADDIE по-русски:", 54, fill="#2A120A", sw=0, shadow=False))
+        out.append(stext(450, 360, "дерзкая, уверенная, хаос", 50, fill="#2A120A", sw=0, shadow=False))
         out.append("</g>")
         if t >= EV["stamp"]:
             p = prog(t, EV["stamp"], EV["stamp"] + 0.18); sc = lerp(3.0, 1.0, e_out(p)); op = clamp(p * 3)
-            out.append(f'<g opacity="{op:.2f}">' + burst(890, 520, 120, 12, "#FF3B3B", seed=5, rot=-14, sc=sc)
-                       + stext(890, 520, "10/10", 64, fill="#fff", rot=-14, sc=sc, sw=10) + "</g>")
+            out.append(f'<g opacity="{op:.2f}">' + burst(860, 690, 105, 12, "#FF3B3B", seed=5, rot=-14, sc=sc)
+                       + stext(860, 690, "BADDIE", 44, fill="#fff", rot=-14, sc=sc, sw=9) + "</g>")
     return "".join(out)
 
 
 def scene_zoom(t, f):
     out = [bg_vapor(t)]
     gx, gy = 540, 1420
-    out.append(stink(t, gx, gy - 300, 0.85 * prog(t, 6.6, 7.0)))
+    for k in range(10):  # floating alt-girl sparkles & hearts
+        rr = random.Random(k); px = rr.choice([rr.uniform(90, 330), rr.uniform(750, 990)]); sp = rr.uniform(90, 160)
+        py = 1250 - ((t - 6.3) * sp + rr.uniform(0, 500)) % 700
+        if k % 2: out.append(heart(px, py, 0.55, "#FF5CC8", op=0.9))
+        else: out.append(star4(px, py, 30, "#00F0FF", rot=t * 120 + k * 20))
     out.append(shadow(gx, gy, 0.92))
     sd = lerp(-900, 0, e_bounce(prog(t, EV["shades"] - 0.35, EV["shades"]))) if t > EV["shades"] - 0.35 else None
     out.append(boar(t, gx, gy, 0.92, sq=0.04 * math.sin(t * 4 * math.pi), mud=1, mouth=mouth_at(f), blink=False if sd is not None else is_blink(t),
                     headrot=6 * math.sin(t * 2 * math.pi), brow=0.6, shades_dy=sd))
     out.append(pill(540, 230, "ДЛЯ ЗУМЕРОВ", 64, "#00F0FF", INK, sc=popscale(t, EV["chip_z"]), rot=-3))
     sv = popscale(t, EV["vibe"])
-    out.append(stext(540, 420, "ВАЙБ: БОЛОТО", fit("ВАЙБ: БОЛОТО", 940, 110), fill="#9BE564", sc=sv, rot=2 + math.sin(t * 5)))
-    if t >= EV["deo"]:
-        p = e_back(prog(t, EV["deo"], EV["deo"] + 0.35)); x = lerp(1350, 860, p); rot = lerp(90, 10, p); y = 820
-        if t > EV["nope"]:
-            dt = t - EV["nope"]
-            x += 10 * math.sin(dt * 80) * math.exp(-dt * 4)
-            if dt > 0.35:
-                q = dt - 0.35; y += 1800 * q * q; rot += 300 * q
-        out.append(deo_can(x, y, rot, 0.95))
-        if t > EV["nope"]:
-            p1 = prog(t, EV["nope"], EV["nope"] + 0.1); p2 = prog(t, EV["nope"] + 0.1, EV["nope"] + 0.2)
-            out.append(f'<line x1="760" y1="640" x2="{760 + 200 * p1:.0f}" y2="{640 + 360 * p1:.0f}" stroke="#FF2D2D" stroke-width="30" stroke-linecap="round"/>')
-            if p2 > 0:
-                out.append(f'<line x1="960" y1="640" x2="{960 - 200 * p2:.0f}" y2="{640 + 360 * p2:.0f}" stroke="#FF2D2D" stroke-width="30" stroke-linecap="round"/>')
-            out.append(stext(800, 570, "НЕ СПАСЁТ", 72, fill="#FF4D4D", sc=popscale(t, EV["nope"] + 0.05), rot=-6))
+    out.append(stext(540, 420, "АЛЬТУШКА", fit("АЛЬТУШКА", 900, 130), fill="#FF5CC8", sc=sv, rot=2 + math.sin(t * 5)))
+    if t >= EV["allowed"]:
+        sc = popscale(t, EV["allowed"], 0.3); rot = -8 + 2 * math.sin(t * 6)
+        out.append(burst(820, 750, 240, 14, "#00F0FF", seed=17, sc=sc, rot=rot, ry=175))
+        out.append(stext(820, 712, "МНЕ ВСЁ", 52, fill=INK, sw=0, shadow=False, sc=sc, rot=rot))
+        out.append(stext(820, 785, "МОЖНО", 64, fill="#FF2BD6", sw=0, shadow=False, sc=sc, rot=rot))
     return "".join(out)
 
 
@@ -595,10 +590,10 @@ def scene_skuf(t, f):
         sc = popscale(t, EV["shout"], 0.3); jx = 6 * math.sin(t * 60); jy = 5 * math.cos(t * 47)
         out.append(f'<g transform="translate({jx:.1f},{jy:.1f})">')
         out.append(f'<polygon points="60,560 -40,700 180,620" fill="#fff" stroke="{INK}" stroke-width="10" stroke-linejoin="round" opacity="{min(sc, 1):.2f}"/>')
-        out.append(burst(470, 520, 440, 16, "#fff", seed=9, sc=sc, ry=210))
-        out.append(stext(470, 465, "ИДИ УМОЙСЯ,", fit("ИДИ УМОЙСЯ,", 640, 84), fill="#E23B3B", sc=sc, sw=0, shadow=False))
-        out.append(stext(470, 565, "ГРЯЗНУЛЯ!", fit("ГРЯЗНУЛЯ!", 640, 96), fill="#E23B3B", sc=sc, sw=0, shadow=False))
-        out.append(stext(470, 650, "— мама, 1998 г.", 38, fill="#6B5B52", sc=sc, sw=0, shadow=False))
+        out.append(burst(470, 570, 440, 16, "#fff", seed=9, sc=sc, ry=210))
+        out.append(stext(470, 510, "НУ И", 84, fill="#E23B3B", sc=sc, sw=0, shadow=False))
+        out.append(stext(470, 610, "ОТОРВА!", fit("ОТОРВА!", 640, 120), fill="#E23B3B", sc=sc, sw=0, shadow=False))
+        out.append(stext(470, 700, "— соседка, 1998 г.", 38, fill="#6B5B52", sc=sc, sw=0, shadow=False))
         out.append("</g>")
     if t >= EV["slipper"]:
         th = EV["hit"]
@@ -636,8 +631,10 @@ def scene_outro(t, f):
     out.append(puddle_front(t))
     out.append(splash_parts(t, EV["land2"], gx, gy - 60, 44, 21, gy + 80))
     out.append(splash_parts(t, EV["hru"], gx, gy - 60, 30, 31, gy + 80))
-    if EV["mozhno"] <= t < EV["hru"]:
-        out.append(stext(540, 400, "МНЕ МОЖНО", fit("МНЕ МОЖНО", 900, 130), fill="#FFD23F", sc=popscale(t, EV["mozhno"]), rot=-3))
+    if EV["tozhe"] <= t < EV["hru"]:
+        sc = popscale(t, EV["tozhe"])
+        out.append(stext(540, 330, "Я ТОЖЕ", 110, sc=sc, rot=-3))
+        out.append(stext(540, 470, "ГРЯЗНУЛЬКА", fit("ГРЯЗНУЛЬКА", 940, 130), fill="#FFD23F", sc=sc, rot=-3))
     if EV["hru"] <= t < EV["end"] + 0.2:
         sc = popscale(t, EV["hru"], 0.3) * (1 - e_in(prog(t, EV["end"], EV["end"] + 0.2)))
         out.append(burst(540, 420, 330, 14, "#FFD23F", seed=12, sc=sc, rot=t * 20))

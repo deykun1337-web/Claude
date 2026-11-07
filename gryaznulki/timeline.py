@@ -38,13 +38,13 @@ def word_t(line, prefix):
 
 EV = {
     "title1": 0.15, "title2": 0.45, "land1": 0.55,
-    "splash1": 3.35, "card": 3.5, "stamp": word_t(1, "десят"),
-    "chip_z": 6.35, "shades": 6.8, "vibe": word_t(2, "вайб"),
-    "deo": word_t(2, "дезодор"), "nope": word_t(2, "спас"),
-    "chip_s": 9.05, "cap": 9.4, "shout": word_t(3, "иди"),
-    "slipper": word_t(3, "грязнул"),
-    "land2": 12.1, "mozhno": word_t(4, "можно"), "hru": word_t(4, "хрю"),
-    "end": 13.95,
+    "splash1": 3.35, "card": 3.5, "stamp": word_t(1, "дерзк"),
+    "chip_z": 6.35, "shades": 6.8, "vibe": word_t(2, "альтушк"),
+    "allowed": word_t(2, "мне"),
+    "chip_s": 9.05, "cap": 9.4, "shout": word_t(3, "оторв"),
+    "slipper": word_t(3, "тикток"),
+    "land2": 12.1, "tozhe": word_t(4, "тоже"), "hru": word_t(4, "хрю"),
 }
 EV["hit"] = EV["slipper"] + 0.38
-EV["shades2"] = EV["mozhno"] + 0.3
+EV["shades2"] = EV["tozhe"] + 0.3
+EV["end"] = EV["hru"] + 0.45
