@@ -338,7 +338,8 @@ def scene_versus(t, f):
 def scene_finale(t, f):
     out = [bg_neon(t, "#16051F"), ring(540, 1250, 520, t, PINK, 12), ring(540, 1250, 600, -t * 0.7, LIME, 6, "8 22"),
            floaters(t, 5, [PINK, LIME, CYAN, YEL], 14)]
-    out.append(nikita(t, f, 540, 1560, 0.82, brow=0.8, hearts=t > EV["you"] + 0.1, headrot=5 * math.sin(t * 2 * math.pi),
+    ex = e_in(prog(t, 19.4, 19.85))  # exit for seamless loop
+    out.append(nikita(t, f, 540, 1560 + 1300 * ex, 0.82, brow=0.8, hearts=t > EV["you"] + 0.1, headrot=5 * math.sin(t * 2 * math.pi),
                       sq=damp(t, EV["zhinki"], 0.5) + 0.03 * math.sin(t * 9), shades_dy=0 if t > EV["pick"] else None))
     if t < EV["you"] - 0.05:
         out.append(ktext(540, 230, "Я БЫ ВЫБРАЛ", fit("Я БЫ ВЫБРАЛ", 940, 100), t, EV["i"], fill="#fff", stagger=0.025))
@@ -355,6 +356,11 @@ def scene_finale(t, f):
             out.append(stext(540, 1000, "— НИКИТА СКУФ СКУФЫЧ", 46, fill="#fff", sc=popscale(t, EV["cta"] + 0.3), rot=-2))
             bob = 18 * math.sin((t - EV["cta"]) * 8)
             out.append(f'<path d="M 540 {860 + bob:.0f} l -40 0 l 40 70 l 40 -70 Z" fill="#fff" stroke="{INK}" stroke-width="7" stroke-linejoin="round" opacity="{clamp((t - EV["cta"]) * 4):.2f}"/>')
+    if ex > 0:
+        k = 1 - ex
+        out = out[:5] + [f'<g opacity="{k:.3f}" transform="translate(540,600) scale({k:.3f}) translate(-540,-600)">'] + out[5:] + ["</g>"]
+    if t > 19.55:  # crossfade into the very first frame of the video
+        out.append(f'<g opacity="{e_inout(prog(t, 19.55, 20.0)):.3f}">{scene_intro(0.0, 0)}</g>')
     return "".join(out)
 
 

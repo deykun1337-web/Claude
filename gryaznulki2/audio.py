@@ -150,14 +150,16 @@ place(sfx, thud(90, 40, 0.4), EV["trash"], 0.6); place(sfx, bling(), EV["concert
 place(sfx, thud(200, 50, 0.3), EV["zhinki"], 1.0)
 place(sfx, scratch(), EV["you"] - 0.1, 0.9); place(sfx, splash(), EV["cta"], 0.4)
 place(sfx, pop(), EV["cta"] + 0.1); place(sfx, pop(), EV["cta"] + 0.25)
+place(sfx, whoosh(0.4), 19.45, 0.8)
 
 mus = music()
 # Duck music under the voice
 venv = np.abs(voice); k = int(SR * 0.15)
 venv = np.convolve(venv, np.ones(k) / k, mode="same")
 duck = 1 - 0.45 * np.clip(venv / 0.05, 0, 1)
-fade = np.ones(N); fl = int(SR * 0.6); fade[-fl:] = np.linspace(1, 0, fl)
+fade = np.ones(N)  # no fade: the video loops on the beat
 mix = voice * 1.0 + mus * 0.24 * duck * fade + sfx * 0.42
+e = int(SR * 0.01); mix[:e] *= np.linspace(0, 1, e); mix[-e:] *= np.linspace(1, 0, e)
 mix /= np.max(np.abs(mix)) / 0.89
 
 with wave.open("build/mix.wav", "wb") as w:

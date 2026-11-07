@@ -1,5 +1,5 @@
 # Shorten long pauses inside each voice line, remap word timings, then speed up slightly.
-import json, subprocess, numpy as np, wave
+import json, os, subprocess, numpy as np, wave
 SR=48000; MAXGAP=0.22; TEMPO=1.0; THR=0.012
 def load(p):
     raw=subprocess.check_output(["ffmpeg","-v","error","-i",p,"-f","s16le","-ac","1","-ar",str(SR),"-"])
@@ -31,6 +31,9 @@ for i,o in enumerate(data):
     f=int(SR*0.01); out[:f]*=np.linspace(0,1,f); out[-f:]*=np.linspace(1,0,f)
     save(f"build/t{i}_raw.wav",out)
     subprocess.run(["ffmpeg","-v","error","-y","-i",f"build/t{i}_raw.wav","-af",f"atempo={TEMPO}",f"build/t{i}.wav"],check=True)
+    # Skuf voice: ~3 semitones lower + more bass, same timing
+    subprocess.run(["sox",f"build/t{i}.wav",f"build/t{i}_s.wav","pitch","-290","bass","+4","gain","-n","-1"],check=True)
+    os.replace(f"build/t{i}_s.wav",f"build/t{i}.wav")
     ot=np.array([x[0] for x in tmap]); nt=np.array([x[1] for x in tmap])
     def m(t): return float(np.interp(t,ot,nt))/TEMPO
     for w in o["words"]:
