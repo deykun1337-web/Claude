@@ -304,7 +304,7 @@ def scene_stat(t, f):
                    '<rect x="-330" y="-62" width="660" height="124" rx="20" fill="none" stroke="#FF3B5C" stroke-width="12"/>'
                    + stext(0, 0, "ВМЕСТО ЖЕНЫ", 84, fill="#FF3B5C", sw=0, shadow=False) + "</g></g>")
     out.append(nikita(t, f, 540, 1700, 0.62, brow=0.6, look=(1, -0.6) if t < EV["instead"] else (0, 0), headrot=5 * math.sin(t * 2 * math.pi), sq=0.03 * math.sin(t * 9)))
-    out.append(stext(540, 1880, "* данные взяты с потолка", 26, fill="#8A93B8", sw=0, shadow=False).replace(FONT, MONO))
+    out.append(stext(540, 1880, "* данные взяты с потолка Никиты", 26, fill="#8A93B8", sw=0, shadow=False).replace(FONT, MONO))
     return "".join(out)
 
 
@@ -352,6 +352,7 @@ def scene_finale(t, f):
         out.append(stext(540, 450, "А ТЫ?", 200, fill=PINK, sc=sc, rot=-5))
         if t >= EV["cta"]:
             out.append(sticker(540, 760, "ПИШИ В КОММЕНТЫ", 58, LIME, INK, t, EV["cta"], 3))
+            out.append(stext(540, 1000, "— НИКИТА СКУФ СКУФЫЧ", 46, fill="#fff", sc=popscale(t, EV["cta"] + 0.3), rot=-2))
             bob = 18 * math.sin((t - EV["cta"]) * 8)
             out.append(f'<path d="M 540 {860 + bob:.0f} l -40 0 l 40 70 l 40 -70 Z" fill="#fff" stroke="{INK}" stroke-width="7" stroke-linejoin="round" opacity="{clamp((t - EV["cta"]) * 4):.2f}"/>')
     return "".join(out)
@@ -385,6 +386,13 @@ def subtitles(t):
     return ""
 
 
+def nametag(t):
+    t0 = EV["skufych"] + 0.5
+    if t < t0: return ""
+    sc = popscale(t, t0, 0.35) * (1 + 0.03 * base.beat(t))
+    return pill(540, 1790, "НИКИТА СКУФ СКУФЫЧ", 42, LIME, INK, sc=sc, rot=-2)
+
+
 def frame_svg(f):
     t = f / FPS
     name = next((n for a, b, n in SCENES if a <= t < b), "finale")
@@ -394,7 +402,7 @@ def frame_svg(f):
             f'<rect width="{W}" height="{H}" fill="#000"/>'
             f'<g transform="translate({dx:.1f},{dy:.1f}) translate(540,960) scale({1.03 * s:.4f}) translate(-540,-960)">{body}</g>'
             f'<rect width="{W}" height="{H}" fill="url(#gVig)"/>'
-            f'{stripes_wipe(t)}{subtitles(t)}{base.WM()}</svg>')
+            f'{stripes_wipe(t)}{subtitles(t)}{nametag(t)}{base.WM()}</svg>')
 
 
 def render(f):
