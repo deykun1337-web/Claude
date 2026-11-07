@@ -590,7 +590,7 @@ def scene_skuf(t, f):
     look = (-1, -0.3) if EV["shout"] < t < EV["hit"] else (0, 0)
     out.append(boar(t, gx, gy, 0.92, sq=0.03 * math.sin(t * 9), mud=1, mouth=mouth_at(f), blink=is_blink(t),
                     headrot=hr, brow=brow, cap_dy=cd, look=look))
-    out.append(pill(540, 200, "ДЛЯ СКУФОВ", 64, "#F2C14E", INK, sc=popscale(t, EV["chip_s"]), rot=3))
+    out.append(pill(540, 240, "ДЛЯ СКУФОВ", 64, "#F2C14E", INK, sc=popscale(t, EV["chip_s"]), rot=3))
     if t >= EV["shout"]:
         sc = popscale(t, EV["shout"], 0.3); jx = 6 * math.sin(t * 60); jy = 5 * math.cos(t * 47)
         out.append(f'<g transform="translate({jx:.1f},{jy:.1f})">')
@@ -653,6 +653,28 @@ def scene_outro(t, f):
 SCENE_FN = {"intro": scene_intro, "define": scene_define, "zoom": scene_zoom, "skuf": scene_skuf, "outro": scene_outro}
 
 
+HANDLE = "@deykun1337"
+
+
+def watermark():
+    size = 40; w = tw(HANDLE, size); x0 = 540 - (w + 62) / 2; y = 110
+    icon = (f'<g transform="translate({x0:.1f},{y - 25})" fill="none" stroke="#fff" stroke-width="5">'
+            '<rect x="2" y="2" width="46" height="46" rx="14"/><circle cx="25" cy="25" r="11"/>'
+            '<circle cx="37.5" cy="12.5" r="2.5" fill="#fff" stroke="none"/></g>')
+    shadow_icon = icon.replace(f'translate({x0:.1f},{y - 25})', f'translate({x0 + 3:.1f},{y - 22})').replace('#fff', '#000')
+    return (f'<g opacity="0.85"><g opacity="0.45">{shadow_icon}</g>{icon}'
+            + stext(x0 + 62, y, HANDLE, size, fill="#fff", stroke="#000", sw=7, shadow=False, anchor="start") + "</g>")
+
+
+WATERMARK = None
+
+
+def WM():
+    global WATERMARK
+    if WATERMARK is None: WATERMARK = watermark()
+    return WATERMARK
+
+
 def frame_svg(f):
     t = f / FPS
     name = next(n for a, b, n in SCENES if a <= t < b) if t < DUR else "outro"
@@ -662,7 +684,7 @@ def frame_svg(f):
             f'<rect width="{W}" height="{H}" fill="#000"/>'
             f'<g transform="translate({dx:.1f},{dy:.1f}) translate(540,960) scale(1.03) translate(-540,-960)">{body}</g>'
             f'<rect width="{W}" height="{H}" fill="url(#gVig)"/>'
-            f'{wipe(t)}{subtitles(t)}</svg>')
+            f'{wipe(t)}{subtitles(t)}{WM()}</svg>')
 
 
 def render(f):
