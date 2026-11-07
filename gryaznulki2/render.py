@@ -402,7 +402,7 @@ def frame_svg(f):
             f'<rect width="{W}" height="{H}" fill="#000"/>'
             f'<g transform="translate({dx:.1f},{dy:.1f}) translate(540,960) scale({1.03 * s:.4f}) translate(-540,-960)">{body}</g>'
             f'<rect width="{W}" height="{H}" fill="url(#gVig)"/>'
-            f'{stripes_wipe(t)}{subtitles(t)}{nametag(t)}{base.WM()}</svg>')
+            f'{stripes_wipe(t)}{subtitles(t)}{base.WM()}</svg>')
 
 
 def render(f):
