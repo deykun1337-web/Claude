@@ -44,7 +44,7 @@ def overlays(F):
     if sh == "charge":
         k = clamp((t - CH0) / 0.5)
         o.append(flare(540, 1000, k) + f'<rect width="1080" height="1920" fill="#FFF4D8" opacity="{0.35 * max(0, 1 - abs(t - CH0 - 0.35) * 4):.2f}"/>')
-        o.append(title("ЗА СКИДКИ", 470, 110, t, CH0 + 0.2))
+        o.append(title("ЗА СКИДКИ", 1290, 120, t, CH0 + 0.2))
     if sh == "end":
         o.append(title("С ЧЁРНОЙ ПЯТНИЦЕЙ", 560, fit("С ЧЁРНОЙ ПЯТНИЦЕЙ", 940, 90), t, F["shot_t"] + 0.3))
         if t > DUR - 1.4: o.append(base.pill(540, 1260, "ОТМЕТЬ ТОГО, КТО ПОЙДЁТ ЗА СКИДКАМИ", 34, GOLD, "#0A0C10", sc=popscale(t, DUR - 1.4)))
