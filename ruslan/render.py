@@ -186,7 +186,7 @@ def ui_ok(t, t0):
 
 def ui_block(t, t0):
     p = e_back(prog(t, t0, t0 + 0.4))
-    fp = "".join(f'<path d="M {-60 + k * 6} {40 - k * 4} Q 0 {-80 + k * 10} {60 - k * 6} {40 - k * 4}" stroke="#FF3B30" stroke-width="8" fill="none"/>' for k in range(7))
+    fp = "".join(f'<path d="M {-r} {40} A {r} {r * 1.25} 0 0 1 {r} {40 - k * 6}" stroke="#FF3B30" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="{60 + k * 25} 14"/>' for k, r in enumerate((14, 30, 46, 62, 78, 94)))
     return ('<rect width="1080" height="1920" fill="#140606"/>' + f'<g transform="translate(540,760) scale({max(p, 0.01) * 1.6:.3f})">{fp}</g>'
             + stext(540, 1000, "Аккаунт", 70, fill="#fff", sw=0, shadow=False) + stext(540, 1085, "заблокирован", 70, fill="#fff", sw=0, shadow=False))
 
@@ -304,7 +304,7 @@ def scene(t):
         return medium(t, hat="cowboy") + brackets() + box(120, 260, 620, 860, "ОБЪЕКТ: КОВЁР 99%", RED)
     if c == "flag":
         p = e_out(prog(t, t0, t0 + 0.25))
-        return (medium(t, hat="cowboy", arms_up=1.0, flag=p) + stext(250, 230, "БАМ!", 120, fill="#fff", sc=popscale(t, t0, 0.25), rot=-10))
+        return (medium(t, hat="cowboy", arms_up=1.0, flag=p) + stext(760, 420, "БАМ!", 130, fill="#fff", sc=popscale(t, t0, 0.25), rot=-10))
     if c == "close_hat": return close(t, t0, hat="cowboy")
     if c == "room_mom":
         return medium(t, hat="cowboy", flag=1.0, mom_in=e_out(prog(t, t0, t0 + 0.3))) + box(10, 520, 200, 560, "ВТОРОЙ ЧЕЛОВЕК", RED)
