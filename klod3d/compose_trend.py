@@ -81,7 +81,7 @@ def notif(t, t0, n=48):
 
 
 def overlays(F):
-    t, tag, i = F["t"], F["tag"], F["line"]
+    t, tag, i = F["t"], F.get("tag", ""), F["line"]
     o = []
     if KIND == "musya":
         if tag == "poster": o.append(stext(540, 330, "МУСЯ ПРОПАЛА", fit("МУСЯ ПРОПАЛА", 960, 120), fill=YEL, stroke="#1A1A1A", sw=14, rot=-3) + poster(t))
@@ -90,6 +90,25 @@ def overlays(F):
         if tag == "meme": o.append(meme_text(t, S[3]))
         if tag == "voz": o.append(lib2d.stamp(t, S[7] + 1.2, "ВОЗДУХАН"))
         if t > DUR - 1.3: o.append(lib2d.pill(540, 1180, "ОТМЕТЬ ТОГО, КТО ИЩЕТ МУСЮ", 40, YEL, "#1A1A1A", sc=popscale(t, DUR - 1.3)))
+    elif KIND == "obidelsya":
+        if tag == "hook": o.append(stext(540, 330, "КЛОД ОБИДЕЛСЯ", fit("КЛОД ОБИДЕЛСЯ", 960, 120), fill=YEL, stroke="#1A1A1A", sw=14, rot=-3))
+        if tag == "47":
+            o.append(lib2d.card(540, 420, 760, 260, stext(-330, -60, "Запросы к другой нейронке", 38, fill="#fff", sw=0, shadow=False, anchor="start")
+                                + stext(-330, 40, "47", 110, fill=RED, sw=0, shadow=False, anchor="start").replace(FONT, "JetBrains Mono ExtraBold")))
+        if tag == "ignor" and t > S[5] + 0.9:
+            p = e_back(prog(t, S[5] + 0.9, S[5] + 1.3))
+            o.append(f'<g transform="translate(540,400) scale({max(p, 0.01):.3f})"><rect x="-380" y="-150" width="760" height="300" rx="30" fill="#0E1116" opacity="0.92" stroke="{YEL}" stroke-width="5"/>'
+                     + stext(0, -80, "ВАШ ТАРИФ", 36, fill="#C9B07A", sw=0, shadow=False) + stext(0, 0, "ИГНОР", 110, fill=YEL, sw=0, shadow=False)
+                     + stext(0, 90, "20 000 ₽ / мес", 40, fill="#fff", sw=0, shadow=False) + "</g>")
+        if t > DUR - 1.3: o.append(lib2d.pill(540, 1180, "ОТМЕТЬ ТОГО, КТО ИЗМЕНЯЕТ НЕЙРОНКЕ", 36, YEL, "#1A1A1A", sc=popscale(t, DUR - 1.3)))
+    elif KIND == "vmoskve":
+        name = {"moscow": "Москва", "piter": "Санкт-Петербург", "village": "д. Кабаново", "home": "Дом"}[F["loc"]]
+        sc = popscale(t, F["cut_t"], 0.3)
+        w = tw(name, 44) + 110
+        o.append(f'<g transform="translate(540,230) scale({sc:.3f})"><rect x="{-w / 2:.0f}" y="-40" width="{w:.0f}" height="80" rx="40" fill="#0E1116" opacity="0.85"/>'
+                 f'<path transform="translate({-w / 2 + 50:.0f},0)" d="M 0 22 C -22 -2 -18 -26 0 -26 C 18 -26 22 -2 0 22 Z" fill="{RED}"/><circle cx="{-w / 2 + 50:.0f}" cy="-10" r="7" fill="#fff"/>'
+                 + stext(-w / 2 + 80, 0, name, 44, fill="#fff", sw=0, shadow=False, anchor="start") + "</g>")
+        if F["line"] == 0: o.append(stext(540, 400, "Я В МОСКВЕ!", fit("Я В МОСКВЕ!", 960, 120), fill=YEL, stroke="#1A1A1A", sw=14, rot=-3, sc=popscale(t, 0.05)))
     else:
         if tag == "clock": o.append(clock(t, S[0]))
         if tag == "buzz": o.append(notif(t, E[1]))
@@ -123,7 +142,7 @@ def layer(f):
     F = PLAN["frames"][f]
     bg = plate.copy() if F["shot"] == "ui" else Image.open(os.path.join(FR, f"{f:05d}.png")).convert("RGBA")
     svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">{lib2d.DEFS}'
-           f'{overlays(F)}{captions(F["t"], F["tag"])}{base.WM()}</svg>')
+           f'{overlays(F)}{captions(F["t"], F.get("tag", ""))}{base.WM()}</svg>')
     ov = Image.open(io.BytesIO(cairosvg.svg2png(bytestring=svg.encode(), output_width=720, output_height=1280))).convert("RGBA")
     return Image.alpha_composite(bg, ov)
 
@@ -136,10 +155,10 @@ def one(f):
     F = PLAN["frames"][f]
     if F["shot"] != "ui" and not os.path.exists(os.path.join(FR, f"{f:05d}.png")): return f, False
     im = layer(f); t = F["t"]
-    if KIND == "telefon" and t > DUR - 0.3:
+    if KIND in ("telefon", "vmoskve") and t > DUR - 0.3:
         if FIRST is None: FIRST = layer(0)
         im = Image.blend(im, FIRST, min(1, (t - DUR + 0.3) / 0.3))
-    if KIND == "musya" and t > DUR - 0.5:
+    if KIND in ("musya", "obidelsya") and t > DUR - 0.5:
         im = Image.blend(im, Image.new("RGBA", im.size, (0, 0, 0, 255)), min(1, (t - DUR + 0.5) / 0.5))
     im.convert("RGB").save(os.path.join(CO, f"{f:05d}.png"))
     return f, True

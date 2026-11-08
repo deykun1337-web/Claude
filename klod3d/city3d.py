@@ -35,7 +35,7 @@ box("spire", 1.2, 1.2, 3.0, (X + 1.5, 8.6, 12.5), {"other": mat_col("green", "#2
 box("star", 0.9, 0.3, 0.9, (X + 1.5, 8.4, 14.5), {"other": starm})
 box("clock", 1.6, 0.1, 1.6, (X + 1.5, 7.05, 7.0), {"other": mat_col("clockf", "#F4EAD0", 0.4, emit=1.5)})
 for k in range(-3, 4):
-    box("lamp", 0.12, 0.12, 2.6, (X + k * 3.2, 4.5, 1.3), {"other": mat_col("pole", "#222", 0.5)})
+    box("lamp", 0.12, 0.12, 2.6, (X + k * 3.2, 4.5, 1.3), {"other": mat_col("pole", "#222222", 0.5)})
     box("lampb", 0.35, 0.35, 0.35, (X + k * 3.2, 4.5, 2.7), {"other": lampm})
 area("m_key", (X - 1.5, -3.0, 3.6), (X, 1, 1.4), 420, (1.0, 0.85, 0.7), 3.0)
 area("m_rim", (X + 2, 5, 4), (X, 0, 1.5), 500, (1.0, 0.4, 0.3), 4.0)
@@ -44,7 +44,7 @@ area("m_rim", (X + 2, 5, 4), (X, 0, 1.5), 500, (1.0, 0.4, 0.3), 4.0)
 X = LOC["piter"]
 box("emb", 30, 4, 0.6, (X, 0, -0.3), {"other": mat_col("granite", "#6E6460", 0.6)})
 box("neva", 40, 30, 0.1, (X, 17, -0.8), {"other": mat_col("neva", "#1C2E4A", 0.08)})
-box("rail", 30, 0.1, 0.9, (X, 1.9, 0.45), {"other": mat_col("railm", "#222", 0.4)})
+box("rail", 30, 0.1, 0.9, (X, 1.9, 0.45), {"other": mat_col("railm", "#222222", 0.4)})
 box("fortress", 10, 3, 2.5, (X - 4, 22, 0.5), {"other": mat_col("fort", "#C9A880", 0.7)})
 box("cath", 2, 2, 4, (X - 4, 22, 2.5), {"other": mat_col("cath", "#E8D8B0", 0.6)})
 box("pspire", 0.4, 0.4, 7, (X - 4, 22, 8), {"other": gold})
@@ -77,7 +77,7 @@ X = LOC["home"]
 box("hwall", 10, 0.2, 5, (X, 2.0, 2.5), {"other": mat_col("hwallm", "#2A3B38", 0.85)})
 box("hfloor", 10, 7, 0.1, (X, 0, -0.05), {"other": mat_tex("hfloort", "floor_wood", 0.35)})
 box("hcarpet", 2.2, 0.06, 3.0, (X - 0.4, 1.88, 1.95), {"front": mat_tex("hcarp", "carpet", 0.9), "other": mat_col("hcf", "#C9A04A")})
-box("hdesk", 1.8, 0.8, 0.07, (X + 1.6, 0.9, 0.8), {"other": mat_col("hdeskm", "#5A3A26", 0.45)})
+box("hdesk", 1.8, 0.8, 0.07, (X + 1.2, 1.5, 0.8), {"other": mat_col("hdeskm", "#5A3A26", 0.45)})
 area("h_key", (X - 1.5, -3.0, 3.4), (X, 0.4, 1.4), 420, (1.0, 0.86, 0.66), 3.0)
 
 # ---------------- Руслан (selfie pose) + Клод
@@ -94,13 +94,13 @@ for sx in (-0.41, 0.41):
     piv = empty("shoulder", (sx, 0, 1.48), 0, r_root)
     box("arm", 0.26, 0.28, 0.76, (0, 0, -0.36), {"bottom": mat_col("hand", "#E8BFA2"), "other": r_arm}, piv)
     arms.append(piv)
-arms[1].rotation_euler = (math.radians(-80), 0, math.radians(-25))  # selfie arm toward camera
+arms[1].rotation_euler = (0, 0, 0)
 box("head", 0.5, 0.5, 0.5, (0, 0, 1.78), {"front": r_face, "top": r_cap, "other": r_side}, r_root)
 box("cap", 0.53, 0.53, 0.1, (0, 0, 2.05), {"other": r_cap}, r_root)
 box("brim", 0.5, 0.24, 0.035, (0, -0.35, 1.985), {"other": r_cap}, r_root)
 
 k_root = empty("klod", (0, 0, 0), 0)
-KS = 0.75
+KS = 1.15
 kface = mat_tex("kface", "klod_face_neutral_0_0", 0.6)
 kside = mat_tex("kside", "klod_side"); ktop = mat_tex("ktop", "klod_top"); kdark = mat_tex("kdark", "klod_dark")
 ksnout = mat_tex("ksnout", "klod_snout", 0.5); tusk = mat_col("tusk", "#FFF6E6", 0.3)
@@ -112,7 +112,7 @@ for tx in (-0.25, 0.25): box("tusk", 0.05 * KS, 0.05 * KS, 0.14 * KS, (tx * KS, 
 for ex in (-0.39, 0.39): box("ear", 0.17 * KS, 0.1 * KS, 0.17 * KS, (ex * KS, -0.22 * KS, 1.13 * KS), {"other": kdark}, k_root)
 for k in range(6): box("mane", 0.06, 0.06, 0.08, ((-0.15 + k * 0.06) * KS * 1.3, 0, 1.05 * KS + 0.04), {"other": kdark}, k_root)
 
-selfie = cam("c_selfie", 22, 3.0)
+selfie = cam("c_selfie", 19, 4.0)
 
 for fr in range(START, min(END, len(PLAN["frames"]))):
     F = PLAN["frames"][fr]
@@ -122,17 +122,17 @@ for fr in range(START, min(END, len(PLAN["frames"]))):
     r, k = F["r"], F["k"]
     set_tex(r_face, f'ruslan_face_{r["expr"]}_{r["m"]}_{r["b"]}')
     set_tex(kface, f'klod_face_{k["expr"]}_{k["m"]}_{k["b"]}')
-    r_root.location = (X, 1.0, r.get("hop", 0)); r_root.rotation_euler = (0, 0, math.radians(r.get("turn", 0)))
+    r_root.location = (X - 0.3, 1.0, r.get("hop", 0)); r_root.rotation_euler = (0, 0, math.radians(-12 + r.get("turn", 0)))
     kp = k["pop"]  # 0..1 pop-in behind Руслан
-    k_root.location = (X + 0.85, 2.0, -0.8 * (1 - kp) + 0.03 * abs(math.sin(t * 7)))
+    k_root.location = (X + 0.75, 2.1, -1.2 * (1 - kp) + 0.03 * abs(math.sin(t * 7))); k_root.rotation_euler = (0, 0, math.radians(-18))
     k_root.scale = (max(0.01, kp),) * 3
     for ob in [k_root] + list(k_root.children_recursive): ob.hide_render = kp < 0.02
     if F["loc"] == "home":
-        k_root.location = (X + 1.5, 0.95, 0.84); k_root.scale = (0.6,) * 3
+        k_root.location = (X + 0.75, 1.5, 0.84); k_root.scale = (0.55,) * 3
     sh = F.get("shake", 0)
-    pos = Vector((X - 0.15 + 0.03 * math.sin(t * 1.7) + sh * math.sin(t * 60), -0.65, 1.95 + 0.02 * math.sin(t * 2.1)))
-    tgt = Vector((X + 0.25, 1.6, 1.55))
-    selfie.location = pos; look(selfie, tgt); selfie.data.dof.focus_distance = (Vector((X, 1.0, 1.78)) - pos).length; sc.camera = selfie
+    pos = Vector((X + 0.15 + 0.03 * math.sin(t * 1.7) + sh * math.sin(t * 60), -1.35, 1.95 + 0.02 * math.sin(t * 2.1)))
+    tgt = Vector((X + 0.2, 1.8, 1.75))
+    selfie.location = pos; look(selfie, tgt); selfie.data.dof.focus_distance = (Vector((X - 0.3, 1.0, 1.78)) - pos).length; sc.camera = selfie
     sc.render.filepath = os.path.join(OUTDIR, f"{fr:05d}.png")
     bpy.ops.render.render(write_still=True)
     print("RENDERED", fr, flush=True)

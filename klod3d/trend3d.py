@@ -110,6 +110,10 @@ def make_klod(name, loc, rot, ks, tiger=False):
 
 K_DESK = make_klod("kdesk", (1.75, 1.45, 0.82), -12, 0.55)
 K_SWAMP = make_klod("kswamp", (SX, 0.6, -0.12), 0, 1.0, tiger=True)
+K_CORNER = make_klod("kcorner", (0.95, 1.85, 0.0), 180, 0.8)
+shades = [box("shade", 0.26, 0.04, 0.14, (sx * 0.8, -0.32 * 0.8 * 0 - 0.31, 0.62), {"other": mat_col("shadem", "#0A0A0C", 0.15, metal=0.6)}, K_CORNER[0]) for sx in (-0.17, 0.17)]
+shades.append(box("shadebar", 0.6, 0.04, 0.05, (0, -0.31, 0.68), {"other": mat_col("shadem2", "#0A0A0C", 0.15)}, K_CORNER[0]))
+R_OBI = Vector((-0.35, 0.25, 0))
 
 CAMS = {
     "r_close": (cam("c_r", 38, 1.8), Vector((-1.75, -1.55, 1.75)), Vector((-2.1, 0.55, 1.72))),
@@ -119,6 +123,9 @@ CAMS = {
     "swamp": (cam("c_s", 34, 2.2), Vector((SX - 0.4, -2.6, 1.15)), Vector((SX, 0.6, 0.55))),
     "swamp_wide": (cam("c_sw", 22, 4.5), Vector((SX + 0.5, -5.5, 2.3)), Vector((SX, 2.0, 0.4))),
     "plate": (cam("c_p", 26, 0.9), Vector((0.5, -4.6, 3.5)), Vector((0.2, 0.35, 0.3))),
+    "corner_wide": (cam("c_cw", 24, 3.5), Vector((-0.9, -2.8, 2.1)), Vector((0.45, 1.4, 0.7))),
+    "kc_close": (cam("c_kc", 34, 2.0), Vector((0.7, -0.45, 1.05)), Vector((0.95, 1.85, 0.55))),
+    "r_obi": (cam("c_ro", 32, 1.8), Vector((0.95, 2.0, 1.85)), Vector((-0.35, 0.25, 1.62))),
 }
 
 for fr in range(START, min(END, len(PLAN["frames"]))):
@@ -128,7 +135,9 @@ for fr in range(START, min(END, len(PLAN["frames"]))):
     t = F["t"]; r = F["r"]
     set_tex(r_face, f'ruslan_face_{r["expr"]}_{r["m"]}_{r["b"]}')
     pose = r["pose"]
-    if pose.startswith("lie"):
+    if "pos" in r:
+        r_root.location = (r["pos"][0], r["pos"][1], 0); r_root.rotation_euler = (0, 0, math.radians(r.get("rotz", 0))); blanket.location.z = 0.6
+    elif pose.startswith("lie"):
         r_root.location = (-2.7, -0.1, 0.72); r_root.rotation_euler = (math.radians(-90), 0, 0); blanket.location.z = 0.92
     else:
         r_root.location = (-2.1, 0.55, 0); r_root.rotation_euler = (0, 0, math.radians(20)); blanket.location.z = 0.6
@@ -141,6 +150,13 @@ for fr in range(START, min(END, len(PLAN["frames"]))):
     set_tex(phone_m, "phone_call"); phone_m.node_tree.nodes["Principled BSDF"].inputs["Emission Strength"].default_value = 3.0 if buzz else 0.2
     ns_phone.hide_render = pose == "lie_phone" or pose == "stand_phone"
     ns_glow.data.energy = 40 if buzz else 0
+    kc = F.get("kc")
+    for ob in [K_CORNER[0]] + list(K_CORNER[0].children_recursive): ob.hide_render = kc is None
+    for ob in shades: ob.hide_render = not (kc and kc.get("shades"))
+    if kc:
+        K_CORNER[0].rotation_euler = (0, 0, math.radians(kc["rot"]))
+        set_tex(K_CORNER[1], f'klod_face_{kc["expr"]}_{kc["m"]}_{kc["b"]}'); K_CORNER[3].hide_render = True
+    for ob in [K_DESK[0]] + list(K_DESK[0].children_recursive): ob.hide_render = bool(kc)
     for (root, face, legs, phone, pre), st in ((K_DESK, F["k"]), (K_SWAMP, F["kt"])):
         set_tex(face, f'{pre}_face_{st["expr"]}_{st["m"]}_{st["b"]}')
         pa = st.get("piano", 0)

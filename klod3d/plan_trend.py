@@ -30,6 +30,13 @@ def shot_musya(t):
     return {2: ("r_close", ""), 3: ("swamp", "meme"), 4: ("r_close", ""), 5: ("swamp_wide", ""), 6: ("r_close", ""), 7: ("swamp", "voz")}[i]
 
 
+def shot_obidelsya(t):
+    i = line(t)
+    if i == 0: return ("corner_wide", "hook")
+    if i == 5 and t > S[5] + 0.9: return ("kc_close", "ignor")
+    return {1: ("kc_close", ""), 2: ("r_obi", ""), 3: ("kc_close", "47"), 4: ("r_obi", ""), 5: ("corner_wide", "turn"), 6: ("r_obi", ""), 7: ("kc_close", "ignor")}[i]
+
+
 def shot_telefon(t):
     i = line(t)
     if i in (0, 3, 5, 7): return ("k_desk", {0: "clock", 3: "", 5: "n48", 7: ""}[i])
@@ -41,7 +48,7 @@ def shot_telefon(t):
 frames, starts, prev = [], {}, None
 for f in range(int(DUR * FPS)):
     t = f / FPS
-    shot, tag = (shot_musya if KIND == "musya" else shot_telefon)(t)
+    shot, tag = {"musya": shot_musya, "telefon": shot_telefon, "obidelsya": shot_obidelsya}[KIND](t)
     key = (shot, tag, line(t))
     if key != prev: starts[key] = t; prev = key
     push = min(1, (t - starts[key]) / 3.5); push = push * push * (3 - 2 * push)
@@ -53,6 +60,15 @@ for f in range(int(DUR * FPS)):
         k = {"expr": "neutral", "m": 0, "b": 0, "z0": 0.82}
         kt = {"expr": "smug" if i == 7 else "neutral", "m": km if i >= 3 else 0, "b": blink(t, 0.6), "phone": 1, "raise": 0, "z0": -0.12}
         buzz = 0
+    elif KIND == "obidelsya":
+        ex = {0: "neutral", 2: "sad", 4: "sad", 6: "shock"}.get(i, "neutral")
+        r = {"expr": ex, "m": rm, "b": blink(t), "pose": "stand", "pos": [-0.35, 0.25], "rotz": 143}
+        k = {"expr": "neutral", "m": 0, "b": 0, "z0": 0.82}
+        kt = {"expr": "neutral", "m": 0, "b": 0, "phone": 0, "z0": -0.12}
+        turn = min(1, max(0, (t - S[5] - 0.2) / 1.2)) if t >= S[5] else 0
+        turn = turn * turn * (3 - 2 * turn)
+        F_kc = {"rot": 180 - 180 * turn, "expr": "smug" if turn > 0.5 else "neutral", "m": km, "b": blink(t, 0.4), "shades": turn > 0.6}
+        buzz = 0
     else:
         ex = "sleep" if (i in (0, 1, 6, 7) or t < S[2]) else ("shock" if i == 4 else "sad")
         r = {"expr": ex, "m": rm, "b": blink(t), "pose": "lie_phone" if i in (2, 3, 4, 5) else "lie"}
@@ -63,6 +79,6 @@ for f in range(int(DUR * FPS)):
         buzz = 1 if (i in (0, 1) or (i == 7)) else 0
     frames.append({"t": round(t, 3), "shot": shot, "tag": tag, "line": i, "push": round(push, 4),
                    "sway": [round(0.01 * math.sin(t * 0.9), 4), round(0.006 * math.sin(t * 1.1), 4)],
-                   "r": r, "k": k, "kt": kt, "buzz": buzz})
+                   "r": r, "k": k, "kt": kt, "buzz": buzz, **({"kc": F_kc} if KIND == "obidelsya" else {})})
 json.dump({"dur": DUR, "fps": FPS, "kind": KIND, "S": S, "E": E, "frames": frames}, open(OUT, "w"))
 print("plan", OUT, len(frames), "3d", sum(1 for x in frames if x["shot"] != "ui"))
