@@ -423,3 +423,81 @@ if __name__ == "__main__":
                 klod_tiger_face(e, m, b).save(f"klod_tiger_face_{e}_{m}_{b}")
     trend_misc()
     print("trend textures done")
+
+
+# ---------------- trailer: Earth, Moon, polar bear ----------------
+def earth():
+    rr = random.Random(11); t = PX(16, 16, "#1E5FB0", 81, 10)
+    for cx, cy, r in ((4, 5, 3), (11, 4, 2), (10, 11, 3), (3, 12, 2)):
+        for y in range(16):
+            for x in range(16):
+                if (x - cx) ** 2 + (y - cy) ** 2 <= r * r + rr.randint(-2, 2): t.p(x, y, rr.choice(["#3E9A4A", "#4FAE52", "#8A7A44"]), noise=6)
+    for k in range(10): t.p(rr.randint(0, 15), rr.randint(0, 15), "#F2F4F7", rr.randint(1, 3), 1, noise=4)
+    t.save("earth")
+    m = PX(16, 16, "#B8BCC4", 82, 10)
+    for k in range(9):
+        x, y = rr.randint(1, 13), rr.randint(1, 13); m.p(x, y, "#8E939C", 2, 2, noise=4); m.p(x, y, "#6E737C", 1, 1, noise=3)
+    m.save("moon")
+
+
+B = dict(fur="#F2F2EC", fur2="#D6DCE4", nose="#1A1A1A")
+
+
+def bear_face(mode, m):
+    t = PX(16, 16, B["fur"], 83, 8)
+    t.p(5, 9, "#FFFFFF", 6, 5, noise=3)                           # muzzle
+    t.p(7, 9, B["nose"], 2, 2, noise=2)
+    eye = {"evil": "#FF2A2A", "sad": "#1A1A1A", "calm": "#1A1A1A"}[mode]
+    for ex in (3, 11):
+        t.p(ex, 6, eye, 2, 2, noise=2)
+        if mode == "evil": t.p(ex - 1, 5, "#3A3A3A", 4, 1); t.p(ex + (1 if ex < 8 else -1), 4, "#3A3A3A", 2, 1)
+        if mode == "sad": t.p(ex + (-1 if ex < 8 else 1), 4, "#5A5A5A", 3, 1)
+    if m >= 1: t.p(6, 12, "#4A1414", 4, m)
+    elif mode == "sad": t.p(6, 13, "#3A3A3A", 4, 1)
+    else: t.p(6, 12, "#3A3A3A", 4, 1)
+    return t
+
+
+if __name__ == "__main__":
+    earth()
+    for mode in ("evil", "sad", "calm"):
+        for m in (0, 1, 2): bear_face(mode, m).save(f"bear_face_{mode}_{m}")
+    PX(16, 16, B["fur"], 84, 10).save("bear_fur")
+    print("trailer textures done")
+
+
+# ---------------- «Чёрная пятница»: skeleton warriors, shields, helmets, mall ----------------
+def friday_misc():
+    s = PX(16, 16, "#E8E2D0", 91, 10)
+    s.p(3, 5, "#141010", 4, 4, noise=2); s.p(9, 5, "#141010", 4, 4, noise=2)       # eye sockets
+    s.p(4, 6, "#FF6A2A", 2, 2, noise=3); s.p(10, 6, "#FF6A2A", 2, 2, noise=3)       # glowing pupils
+    s.p(7, 10, "#2A2420", 2, 2, noise=2)                                               # nose hole
+    for x in range(4, 12): s.p(x, 13, "#2A2420" if x % 2 else "#F4EFE0", 1, 2, noise=2)  # teeth
+    s.save("skull_face")
+    PX(16, 16, "#DCD5C0", 92, 10).save("bone")
+    r = PX(16, 16, "#1A1614", 93, 4)
+    for y in (2, 5, 8, 11): r.p(1, y, "#E8E2D0", 14, 2, noise=8)
+    r.p(7, 0, "#E8E2D0", 2, 16, noise=6); r.save("ribs")
+    w = PX(16, 16, "#7A4E2A", 94, 14)
+    for x in (3, 7, 11): w.p(x, 0, "#5A3618", 1, 16, noise=6)
+    w.p(0, 0, "#8A8F98", 16, 1, noise=4); w.p(0, 15, "#8A8F98", 16, 1, noise=4); w.p(0, 0, "#8A8F98", 1, 16, noise=4); w.p(15, 0, "#8A8F98", 1, 16, noise=4)
+    w.p(6, 6, "#B8BCC4", 4, 4, noise=4); w.save("shield")
+    h = PX(16, 16, "#7E848E", 95, 12); h.p(0, 12, "#5A5F68", 16, 4, noise=6); h.p(7, 0, "#5A5F68", 2, 16, noise=6); h.save("helmet")
+    horn = PX(8, 8, "#EDE3C8", 96, 8); horn.save("horn")
+    a = PX(32, 32, "#2A2C30", 97, 8)
+    for y in (6, 22): a.p(4, y, "#E8E2B0", 24, 1, noise=6)
+    for x in range(0, 32, 8): a.p(x, 14, "#C9C47A", 4, 1, noise=6)
+    a.save("asphalt")
+    m = PX(32, 16, "#3A3F4A", 98, 8)
+    for x in range(0, 32, 4): m.p(x, 0, "#2E333C", 1, 16, noise=4)
+    m.save("mall_wall")
+    gl = PX(16, 16, "#FFE2A8", 99, 10)
+    for y in range(0, 16, 4): gl.p(0, y, "#FFF4D8", 16, 1, noise=4)
+    gl.save("mall_glass")
+    sh = PX(16, 16, "#E8ECF0", 100, 6)
+    for y in (4, 9, 14): sh.p(0, y, "#9AA3B2", 16, 1, noise=4)
+    sh.save("shelf")
+
+
+if __name__ == "__main__":
+    friday_misc(); print("friday textures done")
