@@ -92,6 +92,23 @@ box("snout", 0.38 * KS, 0.15 * KS, 0.19 * KS, (0, -0.445 * KS, 0.56 * KS), {"oth
 for tx in (-0.25, 0.25): box("tusk", 0.05 * KS, 0.05 * KS, 0.14 * KS, (tx * KS, -0.4 * KS, 0.55 * KS), {"other": tusk}, k_root)
 for ex in (-0.39, 0.39): box("ear", 0.17 * KS, 0.1 * KS, 0.17 * KS, (ex * KS, -0.22 * KS, 1.13 * KS), {"other": kdark}, k_root)
 
+fan_root = empty("fan", (0, 0.62, 1.95), 0, r_root); fan_root.scale = (1.75, 1.75, 1.75)
+fan_rot = empty("fanrot", (0, 0, 0), 0, fan_root)
+fanm = mat_col("fanm", "#B8C4D0", 0.35, metal=0.4); fanh = mat_col("fanh", "#4A525C", 0.4)
+for k in range(3):
+    piv = empty("bladepiv", (0, 0, 0), 0, fan_rot); piv.rotation_euler = (0, math.radians(k * 120), 0)
+    box("blade", 0.16, 0.02, 0.62, (0.04, 0, 0.36), {"other": fanm}, piv)
+box("hub", 0.16, 0.08, 0.16, (0, -0.02, 0), {"other": fanh}, fan_root)
+for (w, h, x, z) in ((1.6, 0.05, 0, 0.8), (1.6, 0.05, 0, -0.8), (0.05, 1.6, 0.8, 0), (0.05, 1.6, -0.8, 0)):
+    box("guard", w, 0.03, h, (x, 0.02, z), {"other": fanh}, fan_root)
+papers = [box("paper", 0.21, 0.01, 0.28, (0, 0, -5), {"other": mat_col("paperm", "#F4EFE6", 0.7)}) for _ in range(8)]
+trash = [box("trash", 0.5, 0.45, 0.55, (-0.95, -0.25, 0.27), {"other": mat_col("trashm", "#2A2F38", 0.3)}),
+         box("trashtie", 0.14, 0.14, 0.16, (-0.95, -0.25, 0.62), {"other": mat_col("trashm2", "#2A2F38", 0.3)})]
+mane = []
+for k in range(6):
+    m_ = box("mane", 0.05, 0.05, 0.11, (0, 0, 0), {"other": kdark}); m_.parent = k_root
+    m_.location = ((-0.15 + k * 0.06) * 1.0, 0.0, 1.05 * KS + 0.06); mane.append(m_)
+
 CAMS = {
     "medium": (cam("c_med", 30, 3.2), Vector((0.1, -4.2, 1.75)), Vector((-0.25, 0.4, 1.45))),
     "r_close": (cam("c_r", 40, 1.6), Vector((-0.05, -1.95, 1.72)), Vector((-0.35, 0.2, 1.68))),
@@ -130,6 +147,15 @@ for fr in range(START, min(END, len(PLAN["frames"]))):
     m_arm.rotation_euler = (math.radians(-60 - 25 * math.sin(F["t"] * 9)), 0, 0)
     door_open.hide_render = not vis_m; doorl.data.energy = 45 if vis_m else 0
     redl.data.energy = 900 if F["red"] else 0
+    w = F.get("wind", 0.0)
+    for ob in [fan_root] + list(fan_root.children_recursive): ob.hide_render = w < 0.25
+    fan_rot.rotation_euler = (0, math.radians(F["t"] * 1400 * w), 0)
+    pl = F.get("papers", [])
+    for k, ob in enumerate(papers):
+        if k < len(pl): ob.location = pl[k][:3]; ob.rotation_euler = (math.radians(pl[k][3]), 0, math.radians(pl[k][4])); ob.hide_render = False
+        else: ob.hide_render = True
+    for ob in trash: ob.hide_render = not F.get("trash", False)
+    for k, ob in enumerate(mane): ob.rotation_euler = (0, math.radians(-50 * w + 12 * w * math.sin(F["t"] * 25 + k)), 0)
     key.data.energy = 220 if F["red"] else 520
     o, pos, tgt = CAMS[shot]
     d = tgt - pos; p = pos + d * (0.08 * F["push"]) + Vector((F["sway"][0], 0, F["sway"][1]))

@@ -1,4 +1,4 @@
-"""Overlay HUD/UI/captions on the blocky 3D «Майкл из Техаса» frames and encode.
+"""Overlay HUD/UI/captions on the blocky 3D «Майкл из Техаса» frames and encode (also used for «Воздухан» via MODE=vozduhan).
 Usage: python3 compose_michael.py <ruslan_project> <frames_dir> <plan.json> <plate.png> <portrait.png> <out.mp4>"""
 import base64, glob, io, json, os, subprocess, sys
 from multiprocessing import Pool
