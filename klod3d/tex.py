@@ -383,3 +383,43 @@ if __name__ == "__main__":
             for b in (0, 1):
                 ruslan_face_hat(e, m, b).save(f"ruslan_face_hat_{e}_{m}_{b}")
     print("hat faces done")
+
+
+# ---------------- trend extras: tiger-striped Клод, phone, swamp ----------------
+def stripes(t, w, h, seed):
+    rr = random.Random(seed)
+    for k in range(0, w + h, 4):
+        x0 = k - h
+        for y in range(h):
+            x = x0 + y // 2
+            if 0 <= x < w and rr.random() < 0.9: t.p(x, y, "#2A140C", 1, 1, noise=4)
+
+
+def klod_tiger_face(expr, m, b):
+    t = klod_face(expr, m, b)
+    t2 = PX(16, 12, K["body"], 23, 10); t2.img = t.img.copy()
+    rr = random.Random(5)
+    for (x, y, l) in ((0, 1, 3), (0, 6, 3), (14, 2, 2), (13, 7, 3), (1, 10, 3), (12, 10, 3), (4, 0, 2), (10, 0, 2)):
+        for k in range(l): t2.p(x + k, y + (k % 2), "#2A140C", noise=4)
+    return t2
+
+
+def trend_misc():
+    s = PX(16, 16, "#F07A2C", 71, 10); stripes(s, 16, 16, 1); s.save("klod_tiger_side")
+    tp = PX(16, 16, "#F07A2C", 72, 10); stripes(tp, 16, 16, 2); tp.save("klod_tiger_top")
+    ph = PX(9, 16, "#101320", 73, 4); ph.p(1, 2, "#3DDC84", 7, 3, noise=6); ph.p(2, 7, "#FFFFFF", 5, 1, noise=2); ph.p(3, 12, "#E5322D", 3, 2, noise=3); ph.save("phone_call")
+    w = PX(32, 32, "#1E3A2A", 74, 10)
+    for k in range(40): w.p(w.rr.randint(0, 31), w.rr.randint(0, 31), "#2E5A40", w.rr.randint(1, 4), 1, noise=6)
+    w.save("swamp_water")
+    lp = PX(8, 8, "#3E8A3A", 75, 12); lp.p(3, 0, "#1E3A2A", 2, 3); lp.save("lily")
+    reed = PX(4, 16, "#4A6A2A", 76, 12); reed.p(0, 0, "#6A4A22", 4, 4); reed.save("reed")
+    mud = PX(16, 16, "#3A2A1A", 77, 10); mud.save("swamp_mud")
+
+
+if __name__ == "__main__":
+    for e in ("neutral", "happy", "smug", "wide"):
+        for m in (0, 1, 2):
+            for b in (0, 1):
+                klod_tiger_face(e, m, b).save(f"klod_tiger_face_{e}_{m}_{b}")
+    trend_misc()
+    print("trend textures done")
