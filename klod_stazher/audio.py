@@ -1,5 +1,6 @@
 """Builds the soundtrack: voice + synthesized music + SFX, and the per-frame mouth envelope."""
-import json, subprocess, wave
+import json, os, subprocess, wave
+VARIANT = os.environ.get('VARIANT', 'a')
 import numpy as np
 from timeline import *
 
@@ -87,11 +88,11 @@ def oink():
 
 # ---------- Music (120 BPM bouncy loop) ----------
 def music():
-    m = np.zeros(N); beat = 60 / BPM
+    m = np.zeros(N); beat = 60 / (BPM if VARIANT == 'a' else BPM * 0.85)
     kick = thud(160, 48, 0.28)
     t = tt(0.15); clap = lowpass(rng.standard_normal(len(t)), 0.6) * np.exp(-t * 30) * 0.5
     t = tt(0.05); hat = np.diff(rng.standard_normal(len(t)), prepend=0) * np.exp(-t * 90) * 0.18
-    roots = [57, 53, 60, 55]  # A F C G
+    roots = [57, 53, 60, 55] if VARIANT == 'a' else [62, 58, 65, 60]  # A F C G / Dm Bb F C
     nb = int(DUR / beat) + 1
     for b in range(nb):
         tb = b * beat
@@ -205,7 +206,7 @@ mix = voice * 1.0 + mus * 0.13 * duck * fade + sfx * 0.4
 e = int(SR * 0.01); mix[:e] *= np.linspace(0, 1, e); mix[-e:] *= np.linspace(1, 0, e)
 mix /= np.max(np.abs(mix)) / 0.89
 
-with wave.open("build/mix.wav", "wb") as w:
+with wave.open("build/mix.wav" if VARIANT == "a" else f"build/mix_{VARIANT}.wav", "wb") as w:
     w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR)
     w.writeframes((mix * 32767).astype(np.int16).tobytes())
 
