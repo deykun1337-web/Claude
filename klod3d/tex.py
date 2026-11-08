@@ -368,3 +368,18 @@ if __name__ == "__main__":
                 mom_face(a, m, b).save(f"mom_face_{a}_{m}_{b}")
     misc_michael()
     print("michael textures done")
+
+
+def ruslan_face_hat(expr, m, b):
+    """Same face without the printed cap (for the cowboy-hat shots)."""
+    t = ruslan_face2(expr, m, b)
+    t.p(0, 0, R["hair"], 16, 3, noise=8); t.p(0, 3, R["skin"], 16, 2, noise=6); t.p(0, 3, R["hair"], 2, 3); t.p(14, 3, R["hair"], 2, 3)
+    return t
+
+
+if __name__ == "__main__":
+    for e in ("neutral", "sad", "shock", "smug", "angry", "panic", "happy", "cry", "sleep"):
+        for m in (0, 1, 2):
+            for b in (0, 1):
+                ruslan_face_hat(e, m, b).save(f"ruslan_face_hat_{e}_{m}_{b}")
+    print("hat faces done")

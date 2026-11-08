@@ -131,7 +131,7 @@ for fr in range(START, min(END, len(PLAN["frames"]))):
     if shot == "ui":
         print("SKIP", fr, flush=True); continue
     r, k, m = F["r"], F["k"], F["m"]
-    set_tex(r_face, f'ruslan_face_{r["expr"]}_{r["m"]}_{r["b"]}')
+    set_tex(r_face, f'ruslan_face_{"hat_" if r["hat"] else ""}{r["expr"]}_{r["m"]}_{r["b"]}')
     set_tex(kface, f'klod_face_{k["expr"]}_{k["m"]}_{k["b"]}')
     set_tex(m_face, f'mom_face_1_{m["m"]}_{m["b"]}')
     for o in cap: o.hide_render = r["hat"]
