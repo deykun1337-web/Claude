@@ -23,14 +23,14 @@ def word_t(line, prefix):
 
 # Dialogue: lines follow each other; longer beats before punchlines.
 SPK = [l.get("spk", "n") for l in _voice]
-PAUSE_BEFORE = {3: 0.35, 5: 0.3, 6: 0.45, 10: 0.2, 13: 0.35, 16: 0.4, 18: 0.55, 20: 0.35, 22: 0.4, 24: 0.55}
+PAUSE_BEFORE = {2: 0.3, 3: 0.4, 5: 0.4, 7: 0.3, 9: 0.4, 10: 0.45}
 VOICE_START = []
 _t = 0.25
 for _i, _l in enumerate(_voice):
     _t += PAUSE_BEFORE.get(_i, 0.32) if _i else 0
     VOICE_START.append(round(_t, 3)); _t += _l["dur"]
 VOICE_END = [VOICE_START[i] + l["dur"] for i, l in enumerate(_voice)]
-DUR = round(VOICE_END[-1] + 1.6, 2)
+DUR = round(VOICE_END[-1] + 0.3, 2)  # seamless loop back to line 0
 NFRAMES = int(FPS * DUR)
 WORDS = []
 for li, line in enumerate(_voice):

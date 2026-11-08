@@ -187,18 +187,18 @@ def wind(d):
 
 
 S = VOICE_START
-from render import CUES
-for ts, name in CUES[1:]:
+import render as R
+for ts, name in R.CUES[1:]:
     place(sfx, whoosh(0.3), max(0, ts - 0.12), 0.45)
-place(sfx, pop(), 0.05, 0.8); place(sfx, cash(), CUES[1][0] + 0.1, 0.8)
-for k in range(14): place(sfx, tick(), S[8] + k * 0.13, 0.5)
-place(sfx, buzz(), S[9] + 0.2, 0.8)
-place(sfx, thud(180, 50, 0.35), S[10], 1.1); place(sfx, bling(), S[10] + 0.1, 0.6)
-place(sfx, buzz(), S[13], 0.7); place(sfx, thud(120, 40, 0.4), S[15], 0.8)
-place(sfx, ding(3), S[16], 0.9); place(sfx, boing(), S[17] + 0.2, 0.6)
-place(sfx, drone(1.4), S[18] - 0.1, 0.6); place(sfx, buzz(), S[18], 0.9)
-place(sfx, thud(200, 50, 0.3), S[19] + 0.3, 1.1)
-place(sfx, ding(1), S[22], 0.8); place(sfx, thud(60, 30, 0.9), S[24], 0.8)
+for k in ("качалк", "бизнес", "дуба"): place(sfx, pop(), R.wt(0, k), 0.8)
+for k in range(24): place(sfx, tick(), R.S[2] + 0.05 + k * 0.058, 0.45)
+place(sfx, buzz(), R.S[5] + 0.1, 0.6); place(sfx, thud(200, 50, 0.3), R.wt(5, "воздух"), 1.1)
+place(sfx, cash(), R.S[9] + 0.35, 0.7)
+# wind bed following the on-screen wind
+wb = lowpass(rng.standard_normal(N), 0.03) * 3.2
+env = np.array([R.wind(i / SR) for i in range(0, N, 480)])
+env = np.interp(np.arange(N), np.arange(0, N, 480), env)
+sfx += wb * env * 0.9
 
 mus = music()
 # Duck music under the voice
