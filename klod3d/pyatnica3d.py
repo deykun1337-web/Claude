@@ -134,8 +134,8 @@ for sx in (-1, 1):
 box("kshield", 0.7, 0.06, 0.7, (0.75 * KS, -0.1, 0.55 * KS), {"front": shieldm, "other": bone}, K_ROOT).rotation_euler = (0, 0, math.radians(-25))
 
 CAMS = {
-    "crane": cam("c_crane", 22, 6.0), "r_close": cam("c_r", 38, 2.0), "k_close": cam("c_k", 36, 2.0),
-    "charge": cam("c_ch", 22, 6.0), "in_wide": cam("c_iw", 22, 5.0), "in_r": cam("c_ir", 38, 2.0), "in_k": cam("c_ik", 36, 2.0),
+    "crane": cam("c_crane", 22, 6.0), "r_close": cam("c_r", 38, 2.0), "k_close": cam("c_k", 28, 2.0),
+    "charge": cam("c_ch", 22, 6.0), "in_wide": cam("c_iw", 22, 5.0), "in_r": cam("c_ir", 38, 2.0), "in_k": cam("c_ik", 28, 2.0),
     "end": cam("c_end", 30, 3.5),
 }
 
@@ -173,7 +173,7 @@ for fr in range(START, min(END, len(PLAN["frames"]))):
     elif shot == "r_close":
         place("r_close", (-0.5 + sx, 10.7 - 0.2 * p, 2.0 + sz), (-0.85, 7.9, 1.65))
     elif shot == "k_close":
-        place("k_close", (0.55 + sx, 11.1 - 0.2 * p, 1.55 + sz), (0.9, 7.9, 0.85))
+        place("k_close", (0.55 + sx, 11.4 - 0.2 * p, 1.7 + sz), (0.9, 7.9, 1.05))
     elif shot == "charge":
         place("charge", (0.4 + sx, -1.5 + 2.5 * p, 1.4 + sz), (0, 12, 2.0), (0, 7, 1.5))
     elif shot == "in_wide":
@@ -181,7 +181,7 @@ for fr in range(START, min(END, len(PLAN["frames"]))):
     elif shot == "in_r":
         place("in_r", (IX - 0.45 + sx, -2.3 + 0.2 * p, 1.95 + sz), (IX - 0.7, 0.2, 1.65))
     elif shot == "in_k":
-        place("in_k", (IX + 0.5 + sx, -2.4 + 0.2 * p, 1.35 + sz), (IX + 0.7, 0.2, 0.85))
+        place("in_k", (IX + 0.5 + sx, -2.8 + 0.2 * p, 1.6 + sz), (IX + 0.7, 0.2, 1.05))
     else:
         sxk, syk = SOLO[0].location.x, SOLO[0].location.y
         place("end", (sxk - 1.3 + sx, syk + 2.6, 1.6), (sxk, syk, 1.25))
