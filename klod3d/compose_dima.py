@@ -47,8 +47,8 @@ def calc_card(t, t0):
 
 
 def sent_chips(t, t0):
-    return (lib2d.pill(540, 300, "✓ 25 ₽ отправлено".replace("✓ ", ""), 54, GRN, "#0B0D11", sc=popscale(t, t0 + 0.6), rot=-3)
-            + lib2d.pill(540, 450, "РЕПОСТ СДЕЛАН", 54, YEL, "#0B0D11", sc=popscale(t, t0 + 1.4), rot=3))
+    return (base.pill(540, 300, "✓ 25 ₽ отправлено".replace("✓ ", ""), 54, GRN, "#0B0D11", sc=popscale(t, t0 + 0.6), rot=-3)
+            + base.pill(540, 450, "РЕПОСТ СДЕЛАН", 54, YEL, "#0B0D11", sc=popscale(t, t0 + 1.4), rot=3))
 
 
 def profile_card(t, t0):
@@ -74,7 +74,7 @@ def overlays(F):
     if i == 7: o.append(profile_card(t, S[7]))
     if i == 8:
         o.append(stext(540, 360, "ТВОЯ ОЧЕРЕДЬ", fit("ТВОЯ ОЧЕРЕДЬ", 960, 130), fill=YEL, stroke="#1A1A1A", sw=14, rot=-3, sc=popscale(t, S[8]))
-                 + lib2d.pill(540, 540, "@life_dima2025", 56, "#fff", "#0B0D11", sc=popscale(t, S[8] + 0.3)))
+                 + base.pill(540, 540, "@life_dima2025", 56, "#fff", "#0B0D11", sc=popscale(t, S[8] + 0.3)))
     return "".join(o)
 
 

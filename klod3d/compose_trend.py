@@ -89,7 +89,7 @@ def overlays(F):
         if F["shot"] == "r_close" and i >= 2: o.append(timer_pill(t, S[1] - 0.2))
         if tag == "meme": o.append(meme_text(t, S[3]))
         if tag == "voz": o.append(lib2d.stamp(t, S[7] + 1.2, "ВОЗДУХАН"))
-        if t > DUR - 1.3: o.append(lib2d.pill(540, 1180, "ОТМЕТЬ ТОГО, КТО ИЩЕТ МУСЮ", 40, YEL, "#1A1A1A", sc=popscale(t, DUR - 1.3)))
+        if t > DUR - 1.3: o.append(base.pill(540, 1180, "ОТМЕТЬ ТОГО, КТО ИЩЕТ МУСЮ", 40, YEL, "#1A1A1A", sc=popscale(t, DUR - 1.3)))
     elif KIND == "obidelsya":
         if tag == "hook": o.append(stext(540, 330, "КЛОД ОБИДЕЛСЯ", fit("КЛОД ОБИДЕЛСЯ", 960, 120), fill=YEL, stroke="#1A1A1A", sw=14, rot=-3))
         if tag == "47":
@@ -100,7 +100,7 @@ def overlays(F):
             o.append(f'<g transform="translate(540,400) scale({max(p, 0.01):.3f})"><rect x="-380" y="-150" width="760" height="300" rx="30" fill="#0E1116" opacity="0.92" stroke="{YEL}" stroke-width="5"/>'
                      + stext(0, -80, "ВАШ ТАРИФ", 36, fill="#C9B07A", sw=0, shadow=False) + stext(0, 0, "ИГНОР", 110, fill=YEL, sw=0, shadow=False)
                      + stext(0, 90, "20 000 ₽ / мес", 40, fill="#fff", sw=0, shadow=False) + "</g>")
-        if t > DUR - 1.3: o.append(lib2d.pill(540, 1180, "ОТМЕТЬ ТОГО, КТО ИЗМЕНЯЕТ НЕЙРОНКЕ", 36, YEL, "#1A1A1A", sc=popscale(t, DUR - 1.3)))
+        if t > DUR - 1.3: o.append(base.pill(540, 1180, "ОТМЕТЬ ТОГО, КТО ИЗМЕНЯЕТ НЕЙРОНКЕ", 36, YEL, "#1A1A1A", sc=popscale(t, DUR - 1.3)))
     elif KIND == "vmoskve":
         name = {"moscow": "Москва", "piter": "Санкт-Петербург", "village": "д. Кабаново", "home": "Дом"}[F["loc"]]
         sc = popscale(t, F["cut_t"], 0.3)
@@ -112,7 +112,7 @@ def overlays(F):
     else:
         if tag == "clock": o.append(clock(t, S[0]))
         if tag == "buzz": o.append(notif(t, E[1]))
-        if tag == "n48": o.append(lib2d.pill(540, 360, "ПОНЕДЕЛЬНИК №48", 64, YEL, "#1A1A1A", sc=popscale(t, S[5] + 0.3), rot=-3))
+        if tag == "n48": o.append(base.pill(540, 360, "ПОНЕДЕЛЬНИК №48", 64, YEL, "#1A1A1A", sc=popscale(t, S[5] + 0.3), rot=-3))
         if tag == "dance":
             for k in range(4):
                 ph = (t * 0.9 + k / 4) % 1
