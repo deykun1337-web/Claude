@@ -288,3 +288,83 @@ if __name__ == "__main__":
     city("night", 7)
     floor("floor_dark", "#4A3020", "#3A2418", 33)
     print("extra textures done")
+
+
+# ---------------- «Майкл» extras ----------------
+def ruslan_face2(expr, m, b):
+    t = ruslan_face("neutral" if expr not in ("happy", "shock", "sleep") else expr, m, b)
+    if b: return t
+    if expr == "sad":
+        t.p(3, 6, R["skin"], 3); t.p(10, 6, R["skin"], 3); t.p(3, 7, R["hair"], 1); t.p(4, 6, R["hair"], 2); t.p(12, 7, R["hair"]); t.p(10, 6, R["hair"], 2)
+    elif expr == "angry":
+        t.p(3, 6, R["skin"], 3); t.p(10, 6, R["skin"], 3); t.p(3, 5, R["hair"]); t.p(4, 6, R["hair"], 2); t.p(12, 5, R["hair"]); t.p(10, 6, R["hair"], 2)
+    elif expr in ("panic", "cry"):
+        for ex in (3, 10): t.p(ex, 7, "#F4EFE6", 3, 2); t.p(ex + 1, 7, R["eye"], 1, 2)
+        t.p(3, 5, R["hair"], 3); t.p(10, 5, R["hair"], 3)
+        if expr == "cry":
+            for x in (3, 12): t.p(x, 10, "#7CC4FF", 1, 4, noise=3)
+    elif expr == "smug":
+        for ex in (3, 10): t.p(ex, 7, R["lid"], 3); t.p(ex, 8, R["lid"], 3); t.p(ex, 9, "#3A2418", 3)
+    return t
+
+
+M = dict(skin="#F0C9AC", hair="#8A4A24", hair2="#6E3A1C", lip="#C2455A")
+
+
+def mom_face(angry, m, b):
+    t = PX(16, 16, M["skin"], 51, 6)
+    for r in range(4): t.p(0, r, M["hair"], 16, noise=14)
+    for x in range(0, 16, 3): t.p(x, 4, M["hair2"], 2)
+    t.p(0, 4, M["hair"], 2, 10); t.p(14, 4, M["hair"], 2, 10)
+    if angry: t.p(3, 6, "#5A3018"); t.p(4, 7, "#5A3018", 2); t.p(12, 6, "#5A3018"); t.p(10, 7, "#5A3018", 2)
+    else: t.p(3, 6, "#5A3018", 3); t.p(10, 6, "#5A3018", 3)
+    for ex in (3, 10):
+        if b: t.p(ex, 9, "#3A2418", 3); continue
+        t.p(ex, 8, "#FFFFFF", 3, 2); t.p(ex + 1, 8, "#4A3020", 1, 2)
+    t.p(2, 11, "#F28A8A", 2); t.p(12, 11, "#F28A8A", 2); t.p(7, 10, "#D9A588", 2)
+    if m >= 1: t.p(6, 12, "#4A1414", 4, m + 1)
+    else: t.p(6, 13, M["lip"], 4)
+    return t
+
+
+def misc_michael():
+    h = PX(16, 16, M["hair"], 52, 16); h.save("mom_hair")
+    bl = PX(16, 16, "#E58FA0", 53, 8); bl.p(5, 0, "#F7EFE8", 6, 3); bl.p(7, 5, "#E8B740", 2, 2); bl.save("mom_blouse")
+    sk = PX(16, 16, "#5A4A6A", 54); sk.save("mom_skirt")
+    # carpet: ornament
+    c = PX(32, 44, "#7A1E22", 55, 8)
+    for y in range(44): c.p(0, y, "#C9A04A", 2, noise=4); c.p(30, y, "#C9A04A", 2, noise=4)
+    c.p(0, 0, "#C9A04A", 32, 2, noise=4); c.p(0, 42, "#C9A04A", 32, 2, noise=4)
+    for cy in (9, 22, 35):
+        for r, col in ((6, "#1F3B6B"), (4, "#C9A04A"), (2, "#E8D7B0")):
+            for dy in range(-r, r + 1):
+                w = r - abs(dy); c.p(16 - w * 2, cy + dy, col, w * 4 + 1, noise=4)
+    for k in range(4, 30, 4): c.p(k, 4, "#C9A04A", 2, 2); c.p(k, 39, "#C9A04A", 2, 2)
+    c.save("carpet")
+    f = PX(38, 26, "#F2EFE8", 56, 4)
+    for k in range(13):
+        if k % 2 == 0: f.p(0, k * 2, "#B22234", 38, 2, noise=6)
+    f.p(0, 0, "#3C3B6E", 16, 14, noise=6)
+    for r in range(4):
+        for cc in range(5): f.p(1 + cc * 3, 1 + r * 3, "#FFFFFF")
+    f.save("usflag")
+    hat = PX(16, 16, "#7A4E2A", 57, 10); hat.p(0, 11, "#2A1A10", 16, 3); hat.p(7, 11, "#E8B740", 2, 2); hat.save("hat")
+    s66 = PX(16, 24, "#2C3A38", 58, 6)
+    for x, y in ((3, 6), (3, 7), (3, 8), (3, 9), (3, 10), (3, 11), (3, 12), (4, 6), (5, 6), (4, 9), (5, 9), (6, 10), (6, 11), (4, 12), (5, 12),
+                 (9, 6), (9, 7), (9, 8), (9, 9), (9, 10), (9, 11), (9, 12), (10, 6), (11, 6), (10, 9), (11, 9), (12, 10), (12, 11), (10, 12), (11, 12)):
+        s66.p(x, y, "#E8E2D2", noise=3)
+    s66.save("sign66")
+    lap = PX(16, 10, "#FF3B30", 59, 10); lap.p(2, 2, "#FFFFFF", 12, 1); lap.p(2, 4, "#FFC8C0", 9, 1); lap.save("laptop_red")
+
+
+if __name__ == "__main__":
+    for e in ("neutral", "sad", "shock", "smug", "angry", "panic", "happy", "cry", "sleep"):
+        for m in (0, 1, 2):
+            for b in (0, 1):
+                ruslan_face2(e, m, b).save(f"ruslan_face_{e}_{m}_{b}")
+    for a in (0, 1):
+        for m in (0, 1, 2):
+            for b in (0, 1):
+                mom_face(a, m, b).save(f"mom_face_{a}_{m}_{b}")
+    misc_michael()
+    print("michael textures done")
