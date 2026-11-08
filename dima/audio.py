@@ -198,7 +198,7 @@ duck = 1 - 0.45 * np.clip(venv / 0.05, 0, 1)
 fade = np.ones(N)  # no fade: the video loops on the beat
 tt_ = np.arange(N) / SR
 fade *= np.clip((DUR - tt_) / 1.0, 0, 1)
-mix = voice * 1.0 + mus * 0.13 * duck * fade + sfx * 0.4
+mix = voice * 1.0 + mus * 0.08 * duck * fade + sfx * 0.4
 e = int(SR * 0.01); mix[:e] *= np.linspace(0, 1, e); mix[-e:] *= np.linspace(1, 0, e)
 mix /= np.max(np.abs(mix)) / 0.89
 
