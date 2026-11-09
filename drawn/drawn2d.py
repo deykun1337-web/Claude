@@ -256,6 +256,24 @@ def klod(cx, cy, s=1.0, mouth_open=0.0, expr="neutral", blink=False, look=(0, 0)
     return "".join(g)
 
 
+def camera(t, layers, zoom=1.0, focus=(540, 960), shake=0.0, t0=0.0, push=0.06):
+    """Parallax camera for 2D shots: layers = [(svg, depth)], depth 0 = far background, 1 = characters, 1.3 = foreground.
+    Slow push-in (Ken Burns) + parallax drift + optional shake → the drawn frame never feels static."""
+    k = min(1.0, max(0.0, (t - t0) / 4.0)); z = zoom * (1 + push * k * k * (3 - 2 * k))
+    out = []
+    for svg, d in layers:
+        dx = math.sin(t * 0.35) * 14 * d + (math.sin(t * 47) * shake * 10 if shake else 0)
+        dy = math.cos(t * 0.27) * 8 * d + (math.cos(t * 53) * shake * 8 if shake else 0)
+        zz = 1 + (z - 1) * (0.6 + 0.4 * d)
+        out.append(f'<g transform="translate({focus[0] + dx:.1f},{focus[1] + dy:.1f}) scale({zz:.4f}) translate({-focus[0]},{-focus[1]})">{svg}</g>')
+    return "".join(out)
+
+
+def alive(t, seed=0.0):
+    """Idle life for drawn characters: breathing scale, blink, tiny head bob. Returns dict to pass into ruslan()/klod()."""
+    return {"blink": ((t + seed) % 3.4) < 0.12, "breath": 1 + 0.012 * math.sin(t * 2.2 + seed), "bob": 4 * math.sin(t * 1.7 + seed)}
+
+
 def bubble_caption(txt, y=1700):
     w = 22 * len(txt) + 60
     return (f'<rect x="{540 - w / 2}" y="{y - 38}" width="{w}" height="76" rx="18" fill="#1B1B22" opacity="0.88"/>'
