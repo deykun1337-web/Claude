@@ -5,7 +5,7 @@ into requests to graph.facebook.com / rupload.facebook.com (saved as a network s
 
 Usage:
   python3 reels/ig_post.py whoami                         # check token + find the IG business account id
-  python3 reels/ig_post.py post <video.mp4> <caption.txt> [--cover-ms 1500]
+  python3 reels/ig_post.py post <video.mp4> <caption.txt> [--cover-ms 1500] [--trial]   # --trial = пробный рилс (только неподписчикам)
 
 Requirements on the account side: @deykun1337 is a Professional (Creator/Business) account linked to a
 Facebook Page, and the token has instagram_basic + instagram_content_publish + pages_show_list.
@@ -48,13 +48,14 @@ def whoami():
     print(json.dumps({"facebook_user": me, "instagram": info}, ensure_ascii=False, indent=1))
 
 
-def post(video, caption_file, cover_ms=1500):
+def post(video, caption_file, cover_ms=1500, trial=False):
     uid = ig_user_id()
     caption = open(caption_file, encoding="utf-8").read().strip()
     size = os.path.getsize(video)
     # 1) container for a resumable Reel upload
     c = req("POST", f"{API}/{uid}/media", {"media_type": "REELS", "upload_type": "resumable", "caption": caption,
-                                           "share_to_feed": "true", "thumb_offset": str(cover_ms)})
+                                           "share_to_feed": "true", "thumb_offset": str(cover_ms),
+                                           **({"trial_params": json.dumps({"graduation_strategy": "MANUAL"})} if trial else {})})
     cid = c["id"]
     print("container", cid, flush=True)
     # 2) upload the bytes
@@ -82,6 +83,6 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2 and sys.argv[1] == "whoami": whoami()
     elif len(sys.argv) >= 4 and sys.argv[1] == "post":
         cover = int(sys.argv[sys.argv.index("--cover-ms") + 1]) if "--cover-ms" in sys.argv else 1500
-        post(sys.argv[2], sys.argv[3], cover)
+        post(sys.argv[2], sys.argv[3], cover, trial="--trial" in sys.argv)
     else:
         print(__doc__)
