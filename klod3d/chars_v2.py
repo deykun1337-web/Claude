@@ -62,6 +62,37 @@ def klod_v2(loc, rot, scale=1.0):
     return {"kind": "k", "root": root, "body": body, "legs": legs, "ears": ears, "face": face, "rot": rot, "z0": loc[2]}
 
 
+def polish(C, bevel=0.018, segments=3):
+    """Max quality pass for blocky heroes: rounded bevelled edges that catch light, smooth-shaded bevels,
+    skin subsurface, cloth/fur sheen. Call once after ruslan_v2()/klod_v2()."""
+    import bpy
+    root = C["root"]; seen = set()
+    for o in [root] + list(root.children_recursive):
+        if o.type != "MESH" or o.name in seen: continue
+        seen.add(o.name)
+        dims = min(o.dimensions) if o.dimensions else 0.1
+        m = o.modifiers.new("bev", "BEVEL"); m.width = min(bevel, dims * 0.18); m.segments = segments; m.limit_method = "ANGLE"
+        m.harden_normals = True
+        for poly in o.data.polygons: poly.use_smooth = True
+        if hasattr(o.data, "use_auto_smooth"): o.data.use_auto_smooth = True; o.data.auto_smooth_angle = 0.6
+        for slot in o.material_slots:
+            mat = slot.material
+            if not mat or not mat.use_nodes or mat.get("polished"): continue
+            b = mat.node_tree.nodes.get("Principled BSDF")
+            if not b: continue
+            n = mat.name.lower()
+            if any(k in n for k in ("face", "skin", "hand", "nose")):
+                b.inputs["Subsurface Weight"].default_value = 0.12; b.inputs["Subsurface Radius"].default_value = (0.4, 0.15, 0.08)
+                b.inputs["Roughness"].default_value = 0.5
+            elif any(k in n for k in ("tee", "jeans", "arm", "cap", "pink", "brim")):
+                b.inputs["Sheen Weight"].default_value = 0.35; b.inputs["Roughness"].default_value = 0.75
+            elif any(k in n for k in ("kside", "ktop", "kdark", "kface")):
+                b.inputs["Sheen Weight"].default_value = 0.45; b.inputs["Sheen Roughness"].default_value = 0.4; b.inputs["Roughness"].default_value = 0.7
+            elif "tusk" in n or "shoe" in n or "logo" in n:
+                b.inputs["Roughness"].default_value = 0.3; b.inputs["Coat Weight"].default_value = 0.3
+            mat["polished"] = True
+
+
 def animate(C, t, face=None, gesture=0.0, talk=False, nod=0.0, walk=0.0, hop=0.0, point=0.0):
     f = face or {}
     pre = "v2r" if C["kind"] == "r" else "v2k"
