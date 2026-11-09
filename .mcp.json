@@ -13,10 +13,6 @@
       "env": {
         "CODEGRAPH_TELEMETRY": "0"
       }
-    },
-    "piratex": {
-      "type": "http",
-      "url": "https://piratex.ai/api/mcp"
     }
   }
 }
