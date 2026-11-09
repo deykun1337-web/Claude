@@ -1,20 +1,19 @@
 """Publish a Reel to Instagram via the official Instagram Graph API (Content Publishing).
 
-Works with the "Instagram API with Instagram Login" (graph.instagram.com). The access token is NOT in this
-script or in the repo: the session's network proxy injects it into requests to graph.instagram.com and
-rupload.facebook.com (saved as network secrets on the environment).
+The access token is NOT in this script or in the repo: the session's network proxy injects it
+into requests to graph.facebook.com / rupload.facebook.com (saved as a network secret on the environment).
 
 Usage:
   python3 reels/ig_post.py whoami                         # check token + find the IG business account id
   python3 reels/ig_post.py post <video.mp4> <caption.txt> [--cover-ms 1500]
 
-Requirements: @deykun1337 is a Professional (Creator/Business) account; the token has
-instagram_business_basic + instagram_business_content_publish (+ manage_comments, manage_messages for ig_bot.py).
+Requirements on the account side: @deykun1337 is a Professional (Creator/Business) account linked to a
+Facebook Page, and the token has instagram_basic + instagram_content_publish + pages_show_list.
 """
 import json, os, sys, time
 import urllib.request, urllib.parse, urllib.error
 
-API = "https://graph.instagram.com/v21.0"
+API = "https://graph.facebook.com/v21.0"
 RUPLOAD = "https://rupload.facebook.com/ig-api-upload/v21.0"
 STATE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ig_account.json")
 
@@ -33,15 +32,20 @@ def req(method, url, params=None, data=None, headers=None, timeout=120):
 def ig_user_id():
     if os.path.exists(STATE):
         return json.load(open(STATE))["ig_user_id"]
-    me = req("GET", f"{API}/me", {"fields": "user_id,username"})
-    json.dump({"ig_user_id": me["user_id"], "username": me.get("username")}, open(STATE, "w"), ensure_ascii=False)
-    return me["user_id"]
+    pages = req("GET", f"{API}/me/accounts", {"fields": "name,instagram_business_account{id,username}"})
+    for p in pages.get("data", []):
+        ig = p.get("instagram_business_account")
+        if ig:
+            json.dump({"ig_user_id": ig["id"], "username": ig.get("username"), "page": p.get("name")}, open(STATE, "w"), ensure_ascii=False)
+            return ig["id"]
+    raise SystemExit("No Instagram business account linked to the token's Facebook Pages. " + json.dumps(pages)[:400])
 
 
 def whoami():
+    me = req("GET", f"{API}/me", {"fields": "id,name"})
     uid = ig_user_id()
-    info = req("GET", f"{API}/me", {"fields": "user_id,username,account_type,followers_count,media_count"})
-    print(json.dumps({"ig_user_id": uid, "instagram": info}, ensure_ascii=False, indent=1))
+    info = req("GET", f"{API}/{uid}", {"fields": "username,followers_count,media_count"})
+    print(json.dumps({"facebook_user": me, "instagram": info}, ensure_ascii=False, indent=1))
 
 
 def post(video, caption_file, cover_ms=1500):

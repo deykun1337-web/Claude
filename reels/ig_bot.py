@@ -1,7 +1,7 @@
-"""Keyword auto-replies for @deykun1337 via the official Instagram API (Instagram Login, graph.instagram.com).
+"""Keyword auto-replies for @deykun1337 via the official Instagram Graph API (graph.facebook.com, system-user token).
 
 The access token is NOT in this repo: the session's network proxy injects it into requests to
-graph.instagram.com (saved by the owner as a network secret). Needed permissions:
+graph.facebook.com (saved by the owner as a network secret). Needed permissions:
 instagram_business_basic, instagram_business_manage_comments, instagram_business_manage_messages.
 
 Flow (run hourly by a scheduled task):
@@ -16,7 +16,8 @@ Usage: python3 reels/ig_bot.py whoami | run [--dry]
 """
 import json, os, re, sys, time, urllib.request, urllib.parse, urllib.error
 
-API = "https://graph.instagram.com/v21.0"
+API = "https://graph.facebook.com/v21.0"
+IG = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "ig_account.json")))["ig_user_id"]
 HERE = os.path.dirname(os.path.abspath(__file__))
 STATE = os.path.join(HERE, "state", "ig.json")
 DRY = "--dry" in sys.argv
@@ -59,14 +60,14 @@ def st_save(st):
 
 def send(recipient, text):
     if DRY: print("DRY send", recipient, text[:80]); return
-    req("POST", "me/messages", body={"recipient": recipient, "message": {"text": text}})
+    req("POST", f"{IG}/messages", body={"recipient": recipient, "message": {"text": text}})
 
 
 def run():
     st = st_load(); kw = keywords(); link = tg_link()
     if not link: raise SystemExit("no Telegram invite link yet: run tg_bot.py link first")
     seen = set(st["comments"]); n_c = n_l = 0
-    media = req("GET", "me/media", {"fields": "id,timestamp", "limit": 15}).get("data", [])
+    media = req("GET", f"{IG}/media", {"fields": "id,timestamp", "limit": 15}).get("data", [])
     for m in media:
         cs = req("GET", f"{m['id']}/comments", {"fields": "id,text,username,timestamp", "limit": 50}).get("data", [])
         for c in cs:
@@ -80,7 +81,7 @@ def run():
                 st["people"].setdefault(c.get("username", c["id"]), {"word": word, "state": "asked", "t": time.time()}); n_c += 1
             except RuntimeError as e: print("private reply failed:", e)
     # DMs: people who answered after the private reply
-    conv = req("GET", "me/conversations", {"platform": "instagram", "fields": "participants,messages.limit(3){from,message,created_time}"}).get("data", [])
+    conv = req("GET", f"{IG}/conversations", {"platform": "instagram", "fields": "participants,messages.limit(3){from,message,created_time}"}).get("data", [])
     for cv in conv:
         msgs = cv.get("messages", {}).get("data", [])
         if not msgs: continue
@@ -104,7 +105,7 @@ def run():
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "whoami":
-        print(json.dumps(req("GET", "me", {"fields": "user_id,username,account_type,followers_count,media_count"}), ensure_ascii=False))
+        print(json.dumps(req("GET", IG, {"fields": "username,followers_count,media_count"}), ensure_ascii=False))
     elif len(sys.argv) > 1 and sys.argv[1] == "run":
         run()
     else:
