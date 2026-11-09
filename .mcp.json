@@ -2,8 +2,21 @@
   "mcpServers": {
     "codegraph": {
       "command": "npx",
-      "args": ["-y", "@colbymchenry/codegraph", "serve", "--mcp", "--path", "."],
-      "env": { "CODEGRAPH_TELEMETRY": "0" }
+      "args": [
+        "-y",
+        "@colbymchenry/codegraph",
+        "serve",
+        "--mcp",
+        "--path",
+        "."
+      ],
+      "env": {
+        "CODEGRAPH_TELEMETRY": "0"
+      }
+    },
+    "piratex": {
+      "type": "http",
+      "url": "https://piratex.ai/api/mcp"
     }
   }
 }
