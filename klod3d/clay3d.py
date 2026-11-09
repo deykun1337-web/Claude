@@ -234,7 +234,7 @@ for k in range(5):
         (-0.2 + random.uniform(0, 0.1) + 0.0, -0.03, 0.32 - k * 0.055), (random.uniform(0.15, 0.32), 0.005, 0.025), parent=scr, bev=0.002)
 # --- MYTHIC: Ruslan ДЕЙКУН Кабанович in clay (black cap, cheek tattoos, grey hoodie) + crown, red cape, gold chain
 R3 = empty("ruslan", (0, 0, -20))
-skin = clay("skin", "#E8BFA2", 0.5, 0.3); hood = clay("hood", "#6F7682", 0.7, 0.6); pants = clay("pants", "#23252B", 0.7, 0.6)
+skin = clay("skin", "#E8BFA2", 0.5, 0.3); hood = clay("hood", "#F2F0EC", 0.7, 0.6); pants = clay("pants", "#3C5A8C", 0.7, 0.6)  # v2: white tee, jeans
 gold = clay("gold", "#F2B53A", 0.22, 0.15, metal=0.85); cape = clay("cape", "#B3122E", 0.6, 0.5, sheen=0.6)
 blob("rlegs", pants, [("ELLIPSOID", (-0.16, 0, 0.5), 0.23, (0.7, 0.7, 2.1)), ("ELLIPSOID", (0.16, 0, 0.5), 0.23, (0.7, 0.7, 2.1))], R3)
 for sx in (-1, 1):
@@ -244,17 +244,17 @@ blob("rbody", hood, [("ELLIPSOID", (0, 0, 1.1), 0.58, (1.0, 0.75, 1.0)), ("ELLIP
                      ("ELLIPSOID", (0.48, -0.02, 1.0), 0.22, (0.6, 0.6, 1.5)), ("ELLIPSOID", (0, 0.05, 1.42), 0.3, (1.3, 0.8, 0.5))], R3)
 for sx in (-1, 1): ball("hand", skin, (sx * 0.49, -0.06, 0.72), 0.1, parent=R3)
 blob("rhead", skin, [("BALL", (0, -0.02, 1.8), 0.5, (1, 1, 1)), ("BALL", (-0.37, 0.0, 1.78), 0.14, (1, 1, 1)), ("BALL", (0.37, 0.0, 1.78), 0.14, (1, 1, 1))], R3)
-capm = clay("capm", "#1C1F26", 0.55, 0.5)
+capm = clay("capm", "#F0569A", 0.55, 0.5)  # v2: pink DEYKUN cap
 blob("rcap", capm, [("ELLIPSOID", (0, 0.03, 2.0), 0.56, (1.0, 1.0, 0.62))], R3)
 blob("rbrim", capm, [("ELLIPSOID", (0, -0.4, 1.99), 0.34, (0.9, 0.8, 0.14))], R3)
 blk("capprint", white, (0, -0.37, 2.1), (0.22, 0.02, 0.045), parent=R3, bev=0.01)
-blk("cappatch", clay("patch", "#2D5BD1", 0.5, 0.3), (0, -0.375, 2.05), (0.1, 0.02, 0.035), parent=R3, bev=0.008)
+
 E3 = eyes(R3, 0.14, -0.33, 1.8, 0.07, 0.04)
 for sx in (-1, 1):
     blob(f"lid{sx}", clay("lid", "#C99A80", 0.5, 0.3), [("ELLIPSOID", (sx * 0.14, -0.34, 1.85), 0.12, (1.0, 0.8, 0.45))], R3)
     blk(f"brow{sx}", clay("brow", "#3A2A20", 0.7, 0.4), (sx * 0.14, -0.33, 1.92), (0.14, 0.04, 0.035), parent=R3, bev=0.012)
     for k in range(3):
-        ball("tat", clay("tat", "#5A505A", 0.6, 0.2), (sx * (0.22 + 0.025 * k), -0.27 + 0.03 * k, 1.68 - 0.05 * k), 0.022, parent=R3)
+        ball("blush", clay("blush", "#F2A9A0", 0.6, 0.2), (sx * 0.22, -0.28, 1.68), 0.035 if k == 0 else 0.001, parent=R3)  # v2: no tattoos, blush
 blk("stache", clay("stache", "#8E6A55", 0.7, 0.6), (0, -0.335, 1.64), (0.18, 0.04, 0.03), parent=R3, bev=0.012)
 ball("nose", skin, (0, -0.37, 1.72), 0.065, parent=R3)
 M3 = ball("rmouth", mouthm, (0, -0.31, 1.57), 0.08, (1.0, 0.5, 0.2), parent=R3)
