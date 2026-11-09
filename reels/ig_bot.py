@@ -90,8 +90,12 @@ def run():
             word = next((k for k in kw if re.search(rf"(?<!\w){k}(?!\w)", c.get("text", ""), re.I)), None)
             if not word: continue
             try:
-                send({"comment_id": c["id"]}, f"Привет! 👋 Гайд «{word}» уже готов.\n"
-                                              f"1) Подпишись на @{OWNER}\n2) Ответь сюда «+» — и я сразу пришлю.")
+                if word == "КАБАНОВО":   # series «деревня подписчиков»: the house goes to followers
+                    send({"comment_id": c["id"]}, f"Привет, сосед! 🏡 Записываю тебя в Кабаново.\n"
+                                                  f"Дом в следующей серии получают подписчики:\n1) Подпишись на @{OWNER}\n2) Ответь сюда «+» — и участок твой.")
+                else:
+                    send({"comment_id": c["id"]}, f"Привет! 👋 Гайд «{word}» уже готов.\n"
+                                                  f"1) Подпишись на @{OWNER}\n2) Ответь сюда «+» — и я сразу пришлю.")
                 st["people"].setdefault(c.get("username", c["id"]), {"word": word, "state": "asked", "t": time.time()}); n_c += 1
                 if not DRY:  # a short public reply under the comment also lifts the reel in recommendations
                     try: req("POST", f"{c['id']}/replies", {"message": random.choice(PUBLIC)})
@@ -118,7 +122,10 @@ def run():
         except RuntimeError as e:
             print("profile failed:", e); continue
         if prof.get("is_user_follow_business"):
-            if link:
+            if p["word"] == "КАБАНОВО":
+                send({"id": uid}, f"Участок твой! 🏡 В следующей серии на нём встанет дом с ником @{uname}. "
+                                  + (f"А пока заходи в наш Telegram: {link}" if link else "Смотри следующую серию!"))
+            elif link:
                 send({"id": uid}, f"Спасибо за подписку! 🐗 Вот вход в наш Telegram с гайдами и туториалами: {link}\nЗаявку одобрим автоматически.")
             else:
                 for part in guide_parts(p["word"]): send({"id": uid}, part)
