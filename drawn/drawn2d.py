@@ -77,7 +77,7 @@ def room(t):
         o.append(R(x, 300 + (k % 2) * 40, 130, 170, c, 6, 6))
     o.append(R(0, 1250, 1080, 670, "#6B4A3A", 0, 0)); o.append(R(60, 1120, 640, 40, "#9C6B45", 6))  # desk
     o.append(R(140, 820, 420, 280, "#22262E", 14)); o.append(R(165, 845, 370, 230, "#3D6FD8", 6, 5))  # monitor
-    for k in range(6): o.append(f'<rect x="185" y="{870 + k * 32}" width="{rr}" height="12" fill="#BFD3FF" opacity="0.8"/>'.replace("{rr}", str(120 + (k * 53) % 180)))
+    for k in range(6): o.append(f'<rect x="185" y="{870 + k * 32}" width="{120 + (k * 53) % 180}" height="12" fill="#BFD3FF" opacity="0.8"/>')
     o.append(f'<rect width="1080" height="1920" fill="url(#lamp)" opacity="0.4"/>')
     return "".join(o)
 
@@ -178,6 +178,32 @@ def paper(img, seed=1, amount=10):
     rng = np.random.default_rng(seed); n = rng.normal(0, amount, a.shape[:2])[..., None]
     return Image.fromarray(np.clip(a + n, 0, 255).astype(np.uint8))
 
+
+def pixelate(img, factor=4, colors=48):
+    """HD pixel-art look (like @tony.shev.ai): downscale, limit palette, upscale with hard pixels."""
+    from PIL import Image
+    w, h = img.size
+    small = img.convert("RGB").resize((w // factor, h // factor), Image.LANCZOS)
+    small = small.quantize(colors=colors, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE).convert("RGB")
+    return small.resize((w, h), Image.NEAREST)
+
+
+def chat_pill(txt, x=1040, y=180, accent="#E8806A", avatar="К"):
+    """Salmon chat-message pill with a tiny avatar (dialog captions at the top, as in the pixel-art references)."""
+    w = 24 * len(txt) + 120
+    return (f'<rect x="{x - w}" y="{y - 40}" width="{w}" height="80" rx="20" fill="{accent}" stroke="{OUT}" stroke-width="4"/>'
+            f'<rect x="{x - w + 14}" y="{y - 22}" width="44" height="44" rx="10" fill="#FFFFFF"/>'
+            f'<text x="{x - w + 36}" y="{y + 2}" text-anchor="middle" dominant-baseline="middle" font-family="Inter Display" font-weight="900" font-size="28" fill="{accent}">{escape(avatar)}</text>'
+            f'<text x="{x - w + 74}" y="{y + 2}" dominant-baseline="middle" font-family="Inter" font-weight="600" font-size="38" fill="#FFFFFF">{escape(txt)}</text>')
+
+
+if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] == "pixel":
+    import io, cairosvg
+    from PIL import Image
+    body = (room(0) + ruslan(380, 1740, 1.0, 0.5, "angry", look=(0, 1), arm=0.2) + klod(830, 1640, 0.8, 0.0, "smug", look=(-1, 0))
+            + chat_pill("Опять списали 20 долларов!", avatar="Р", accent="#D9606A"))
+    img = Image.open(io.BytesIO(cairosvg.svg2png(bytestring=grade(body).encode())))
+    pixelate(img).save("drawn/demo_pixel.png"); print("drawn/demo_pixel.png")
 
 if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] == "demo":
     import io, cairosvg
