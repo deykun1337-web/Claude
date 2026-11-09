@@ -4,6 +4,11 @@
 Каждый запуск делает **ОДИН новый ролик** и публикует его **дважды**: основной рилс + пробный (trial, только неподписчикам) уникализированной копией.
 Запуски: 09:47, 14:53, 20:11 МСК (публикация ~через 1,5–2,5 ч → попадает в пики 11–13, 17–19, 21–23 МСК).
 
+## Экономия токенов (оркестрация моделей)
+- Творческое ядро — тема, сценарий, режиссура кадров, проверка контрольных кадров, подписи — делаешь сам (Opus).
+- Рутину без творчества (раздел 0 подготовка, 0b `analytics.py`/`viral.py`, 6b перевыпуск, 7 учёт и push) можно отдать сабагенту `Agent` с `model: "haiku"`, коротким заданием «выполни команды X, верни одну строку». Не читай большие файлы целиком: LOG.md/ANALYTICS.md — только последние 20 строк (`tail -20`), картинки — одной сеткой montage, а не по кадру.
+- Длинные выводы команд обрезай (`| tail -5`).
+
 ## 0. Подготовка (≈5 мин)
 1. Репозиторий deykun1337-web/claude, ветка `claude/trusting-cray-jkn30e`. Если его нет — `add_repo deykun1337-web/claude` (access push), клонировать; `git fetch origin claude/trusting-cray-jkn30e && git checkout claude/trusting-cray-jkn30e && git pull`.
 2. Проверить инструменты: `blender --version`, `fc-list | grep -c InterDisplay`. Если чего-то нет — `apt-get install -y blender xvfb libegl1 libegl-mesa0 libgl1-mesa-dri libgles2 fonts-inter fonts-jetbrains-mono` и `pip install moviepy pillow numpy cairosvg pydub edge-tts`.
