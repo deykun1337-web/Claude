@@ -97,7 +97,13 @@ def run():
                     except RuntimeError as e: print("public reply failed:", e)
             except RuntimeError as e: print("private reply failed:", e)
     # DMs: people who answered after the private reply
-    conv = req("GET", f"{IG}/conversations", {"platform": "instagram", "fields": "participants,messages.limit(3){from,message,created_time}"}).get("data", [])
+    st_save(st)  # remember answered comments even if the DM part fails below
+    conv = []
+    for lim in (10, 5, 3):  # Instagram sometimes answers "reduce the amount of data" — retry smaller
+        try:
+            conv = req("GET", f"{IG}/conversations", {"platform": "instagram", "limit": lim, "fields": "participants,messages.limit(2){from,message,created_time}"}).get("data", []); break
+        except RuntimeError as e:
+            print("conversations retry:", str(e)[:120])
     for cv in conv:
         msgs = cv.get("messages", {}).get("data", [])
         if not msgs: continue
