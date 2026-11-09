@@ -1,0 +1,20 @@
+"""Extra textures for «Вы уже закрываетесь?» (shawarma kiosk at night)."""
+from tex import PX
+s = PX(16, 4, "#8E959E", 61, 6); s.p(0, 0, "#B8BEC6", 16, 1, 4); s.p(0, 3, "#5E646C", 16, 1, 4); s.save("slat")
+w = PX(16, 16, "#E9DCC0", 62, 7)
+for y in range(0, 16, 4): w.p(0, y, "#C8B898", 16, 1, 3)
+for y in range(0, 16, 4):
+    for x in range(0 if (y // 4) % 2 else 2, 16, 4): w.p(x, y, "#C8B898", 1, 4, 3)
+w.save("kiosk_wall")
+t = PX(16, 16, "#F2F2EE", 63, 5)
+for k in range(0, 16, 4): t.p(0, k, "#BFC6C8", 16, 1, 2); t.p(k, 0, "#BFC6C8", 1, 16, 2)
+t.save("tile_white")
+m = PX(16, 16, "#8A4A26", 64, 14)
+for k in range(30): m.p(m.rr.randint(0, 15), m.rr.randint(0, 15), "#C47A3E", m.rr.randint(1, 3), 1, 10)
+for k in range(14): m.p(m.rr.randint(0, 15), m.rr.randint(0, 15), "#5A2C14", 2, 1, 8)
+m.save("doner")
+r = PX(16, 16, "#F3E2B8", 65, 8)
+for k in range(8): r.p(r.rr.randint(0, 14), r.rr.randint(0, 14), "#D9B070", 2, 2, 6)
+r.p(0, 6, "#E8D2A0", 16, 1, 4); r.save("lavash")
+p = PX(16, 16, "#2A2B30", 66, 4); p.p(0, 0, "#3A3C42", 16, 1, 3); p.save("roof")
+print("ok")
