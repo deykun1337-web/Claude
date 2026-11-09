@@ -5,7 +5,7 @@ into requests to graph.facebook.com / rupload.facebook.com (saved as a network s
 
 Usage:
   python3 reels/ig_post.py whoami                         # check token + find the IG business account id
-  python3 reels/ig_post.py post <video.mp4> <caption.txt> [--cover-ms 1500] [--trial] [--story]   # --trial = пробный рилс (только неподписчикам); --story = история (caption игнорируется)
+  python3 reels/ig_post.py post <video.mp4> <caption.txt> [--cover-ms 1500] [--trial] [--story] [--at HH:MM]   # --at = ждать до этого времени МСК; --trial = пробный рилс (только неподписчикам); --story = история (caption игнорируется)
 
 Requirements on the account side: @deykun1337 is a Professional (Creator/Business) account linked to a
 Facebook Page, and the token has instagram_basic + instagram_content_publish + pages_show_list.
@@ -46,6 +46,16 @@ def whoami():
     uid = ig_user_id()
     info = req("GET", f"{API}/{uid}", {"fields": "username,followers_count,media_count"})
     print(json.dumps({"facebook_user": me, "instagram": info}, ensure_ascii=False, indent=1))
+
+
+def wait_until(hhmm):
+    """Sleep until HH:MM Moscow time (UTC+3) today; if that time already passed, publish right away."""
+    import datetime as dt
+    msk = dt.timezone(dt.timedelta(hours=3)); now = dt.datetime.now(msk)
+    h, m = map(int, hhmm.split(":")); target = now.replace(hour=h, minute=m, second=0, microsecond=0)
+    if target > now:
+        print(f"waiting until {hhmm} MSK ({int((target - now).total_seconds() // 60)} min)", flush=True)
+        time.sleep((target - now).total_seconds())
 
 
 def post(video, caption_file, cover_ms=1500, trial=False, story=False):
@@ -117,6 +127,7 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2 and sys.argv[1] == "whoami": whoami()
     elif len(sys.argv) >= 4 and sys.argv[1] == "post":
         cover = int(sys.argv[sys.argv.index("--cover-ms") + 1]) if "--cover-ms" in sys.argv else 1500
+        if "--at" in sys.argv: wait_until(sys.argv[sys.argv.index("--at") + 1])
         post(sys.argv[2], sys.argv[3], cover, trial="--trial" in sys.argv, story="--story" in sys.argv)
     else:
         print(__doc__)
