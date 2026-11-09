@@ -48,6 +48,19 @@ def tg_link():
     return json.load(open(p)).get("invite") if os.path.exists(p) else None
 
 
+def guide_parts(word, n=950):
+    """Guide text for a keyword, split into Instagram-sized DM chunks (used until the Telegram channel is ready)."""
+    path = os.path.join(HERE, "guides", f"{word}.md")
+    txt = open(path, encoding="utf-8").read() if os.path.exists(path) else f"Гайд {word} скоро будет 🙌"
+    txt = re.sub(r"^#+ ", "", txt, flags=re.M).replace("**", "").replace("> ", "")
+    parts, cur = [], ""
+    for para in txt.split("\n\n"):
+        if len(cur) + len(para) + 2 > n and cur: parts.append(cur.strip()); cur = ""
+        cur += para + "\n\n"
+    if cur.strip(): parts.append(cur.strip())
+    return ["Спасибо за подписку! 🐗 Держи гайд:"] + parts[:4]
+
+
 def st_load():
     return json.load(open(STATE)) if os.path.exists(STATE) else {"comments": [], "people": {}}
 
@@ -65,7 +78,6 @@ def send(recipient, text):
 
 def run():
     st = st_load(); kw = keywords(); link = tg_link()
-    if not link: raise SystemExit("no Telegram invite link yet: run tg_bot.py link first")
     seen = set(st["comments"]); n_c = n_l = 0
     media = req("GET", f"{IG}/media", {"fields": "id,timestamp", "limit": 15}).get("data", [])
     for m in media:
@@ -76,8 +88,8 @@ def run():
             word = next((k for k in kw if re.search(rf"(?<!\w){k}(?!\w)", c.get("text", ""), re.I)), None)
             if not word: continue
             try:
-                send({"comment_id": c["id"]}, f"Привет! 👋 Гайд «{word}» и туториалы лежат в нашем закрытом Telegram-канале.\n"
-                                              f"1) Подпишись на @{OWNER}\n2) Ответь сюда «+» — и я пришлю ссылку на канал.")
+                send({"comment_id": c["id"]}, f"Привет! 👋 Гайд «{word}» уже готов.\n"
+                                              f"1) Подпишись на @{OWNER}\n2) Ответь сюда «+» — и я сразу пришлю.")
                 st["people"].setdefault(c.get("username", c["id"]), {"word": word, "state": "asked", "t": time.time()}); n_c += 1
             except RuntimeError as e: print("private reply failed:", e)
     # DMs: people who answered after the private reply
@@ -95,7 +107,10 @@ def run():
         except RuntimeError as e:
             print("profile failed:", e); continue
         if prof.get("is_user_follow_business"):
-            send({"id": uid}, f"Спасибо за подписку! 🐗 Вот вход в наш Telegram с гайдами и туториалами: {link}\nЗаявку одобрим автоматически в течение часа.")
+            if link:
+                send({"id": uid}, f"Спасибо за подписку! 🐗 Вот вход в наш Telegram с гайдами и туториалами: {link}\nЗаявку одобрим автоматически.")
+            else:
+                for part in guide_parts(p["word"]): send({"id": uid}, part)
             p["state"] = "sent"; n_l += 1
         elif time.time() - p.get("reminded", 0) > 12 * 3600:
             send({"id": uid}, f"Пока не вижу подписку на @{OWNER} 🙈 Подпишись и снова напиши «+».")
