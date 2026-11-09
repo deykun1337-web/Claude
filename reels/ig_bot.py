@@ -67,6 +67,7 @@ def st_load():
 
 
 def st_save(st):
+    if DRY: return  # a dry run must not mark comments as answered
     os.makedirs(os.path.dirname(STATE), exist_ok=True)
     st["comments"] = st["comments"][-5000:]
     json.dump(st, open(STATE, "w"), ensure_ascii=False, indent=1)
