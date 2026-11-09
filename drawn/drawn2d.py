@@ -38,6 +38,14 @@ DEFS = '''<defs>
 <linearGradient id="warm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB86B" stop-opacity="0.35"/><stop offset="0.6" stop-color="#FF7FA0" stop-opacity="0.08"/><stop offset="1" stop-color="#3A2A6A" stop-opacity="0.25"/></linearGradient>
 <radialGradient id="vig" cx="0.5" cy="0.45" r="0.75"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#1A0F08" stop-opacity="0.55"/></radialGradient>
 <radialGradient id="lamp" cx="0.5" cy="0" r="1"><stop offset="0" stop-color="#FFE3A8" stop-opacity="0.7"/><stop offset="1" stop-color="#FFE3A8" stop-opacity="0"/></radialGradient>
+<linearGradient id="skinG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F6D3B8"/><stop offset="0.62" stop-color="#EBC3A5"/><stop offset="1" stop-color="#C9967A"/></linearGradient>
+<linearGradient id="teeG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.6" stop-color="#EEE9E1"/><stop offset="1" stop-color="#C8C0B6"/></linearGradient>
+<linearGradient id="capG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF7DB4"/><stop offset="1" stop-color="#D23F82"/></linearGradient>
+<linearGradient id="jeansG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4D6EA3"/><stop offset="1" stop-color="#2F4670"/></linearGradient>
+<linearGradient id="klodG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F58566"/><stop offset="0.55" stop-color="#E5684B"/><stop offset="1" stop-color="#B9472F"/></linearGradient>
+<radialGradient id="snoutG" cx="0.4" cy="0.35" r="0.8"><stop offset="0" stop-color="#FFC2B0"/><stop offset="1" stop-color="#E88A72"/></radialGradient>
+<radialGradient id="glowWin" cx="0.62" cy="0.3" r="0.55"><stop offset="0" stop-color="#FFB37A" stop-opacity="0.45"/><stop offset="1" stop-color="#FFB37A" stop-opacity="0"/></radialGradient>
+<radialGradient id="glowMon" cx="0.3" cy="0.5" r="0.45"><stop offset="0" stop-color="#7FA8FF" stop-opacity="0.35"/><stop offset="1" stop-color="#7FA8FF" stop-opacity="0"/></radialGradient>
 </defs>'''
 
 
@@ -78,7 +86,9 @@ def room(t):
     o.append(R(0, 1250, 1080, 670, "#6B4A3A", 0, 0)); o.append(R(60, 1120, 640, 40, "#9C6B45", 6))  # desk
     o.append(R(140, 820, 420, 280, "#22262E", 14)); o.append(R(165, 845, 370, 230, "#3D6FD8", 6, 5))  # monitor
     for k in range(6): o.append(f'<rect x="185" y="{870 + k * 32}" width="{120 + (k * 53) % 180}" height="12" fill="#BFD3FF" opacity="0.8"/>')
-    o.append(f'<rect width="1080" height="1920" fill="url(#lamp)" opacity="0.4"/>')
+    o.append(R(760, 1120, 70, 90, "#7FA36A", 10, 5)); o.append(P("M770,1120 q-30,-90 25,-120 q10,60 -10,120 M800,1120 q20,-100 60,-110 q-10,70 -45,110", "#5E9A54", 5))  # plant
+    o.append(R(600, 1080, 80, 40, "#E9D9C2", 8, 5))   # mug
+    o.append(f'<rect width="1080" height="1920" fill="url(#lamp)" opacity="0.4"/><rect width="1080" height="1920" fill="url(#glowWin)"/><rect width="1080" height="1920" fill="url(#glowMon)"/>')
     return "".join(o)
 
 
@@ -106,11 +116,13 @@ def brows(x1, x2, y, w, expr):
 
 def mouth(x, y, m, expr, w=34):
     if m > 0.05:
-        h = 10 + 40 * m
-        return (P(f"M{x - w},{y} Q{x},{y + h * 1.3} {x + w},{y} Z", "#7A2230", 6)
-                + (f'<path d="M{x - w * 0.5},{y + h * 0.75} Q{x},{y + h * 0.95} {x + w * 0.5},{y + h * 0.75}" fill="#E86A7A" stroke="none"/>' if m > 0.4 else ""))
+        h = 12 + 34 * m; ww = w * (0.55 + 0.25 * m)
+        o = E(x, y + h * 0.35, ww, h * 0.6, "#6E1E2A", 6)
+        if m > 0.35: o += f'<ellipse cx="{x}" cy="{y + h * 0.65}" rx="{ww * 0.6}" ry="{h * 0.22}" fill="#E86A7A"/>'
+        o += f'<rect x="{x - ww * 0.6}" y="{y + h * 0.35 - h * 0.6 + 4}" width="{ww * 1.2}" height="{max(5, h * 0.18)}" rx="3" fill="#FFFFFF" opacity="0.9"/>'
+        return o
     if expr in ("happy", "smug"): return f'<path d="M{x - w},{y} Q{x},{y + 26} {x + w},{y}" fill="none" stroke="{OUT}" stroke-width="7" stroke-linecap="round"/>'
-    if expr == "sad": return f'<path d="M{x - w},{y + 14} Q{x},{y - 8} {x + w},{y + 14}" fill="none" stroke="{OUT}" stroke-width="7" stroke-linecap="round"/>'
+    if expr in ("sad", "angry"): return f'<path d="M{x - w},{y + 14} Q{x},{y - 8} {x + w},{y + 14}" fill="none" stroke="{OUT}" stroke-width="7" stroke-linecap="round"/>'
     return f'<line x1="{x - w * 0.7}" y1="{y + 4}" x2="{x + w * 0.7}" y2="{y + 4}" stroke="{OUT}" stroke-width="7" stroke-linecap="round"/>'
 
 
@@ -159,6 +171,91 @@ def klod(cx, cy, s=1.0, mouth_open=0.0, expr="neutral", blink=False, look=(0, 0)
     return "".join(g)
 
 
+# ---------------- v2 "quality" heroes: cel shading, rim light, details (override the simple ones above) ----------------
+def _shadow(d):
+    return f'<path d="{d}" fill="#5A2E1E" opacity="0.18" stroke="none"/>'
+
+
+def ruslan(cx, cy, s=1.0, mouth_open=0.0, expr="neutral", blink=False, look=(0, 0), arm=0.0):
+    g = [f'<g transform="translate({cx},{cy}) scale({s})">']
+    g.append(E(0, 8, 230, 30, "#000", 0) .replace('fill="#000"', 'fill="#000" opacity="0.25"'))                # ground shadow
+    for x in (-62, 62):
+        g.append(P(f"M{x - 48},-335 L{x - 44},-30 Q{x},-14 {x + 46},-30 L{x + 50},-335 Z", "url(#jeansG)"))
+        g.append(f'<path d="M{x + 30},-300 L{x + 26},-60" stroke="#E8E8E8" stroke-width="7" opacity="0.8"/>')  # side stripe
+        g.append(P(f"M{x - 70},-5 Q{x - 72},-40 {x - 30},-42 L{x + 50},-40 Q{x + 86},-30 {x + 80},-2 Z", "#F7F7F7"))
+        g.append(f'<path d="M{x - 64},-12 L{x + 74},-12" stroke="#C9C9C9" stroke-width="6"/>')
+    g.append(P("M-178,-320 L-160,-640 Q-90,-690 0,-692 Q90,-690 160,-640 L178,-320 Q0,-300 -178,-320 Z", "url(#teeG)"))
+    g.append(_shadow("M70,-660 Q150,-640 160,-560 L172,-330 Q120,-322 80,-320 Q110,-480 70,-660 Z"))
+    g.append('<path d="M-40,-470 Q-10,-455 20,-470 M-100,-400 Q-80,-390 -60,-400" stroke="#BDB4A8" stroke-width="5" fill="none"/>')  # folds
+    for k in range(13):                                                                     # gold chain links
+        a = -1.2 + k * 0.2; x = 70 * math.sin(a); y = -650 + 70 * (1 - math.cos(a)) * 1.2
+        g.append(E(x, y, 9, 6, "#F2B53A", 3, rot=int(a * 57)))
+    g.append(P("M-18,-555 L18,-555 L24,-520 L0,-505 L-24,-520 Z", "#F2B53A", 4))
+    # arms
+    g.append(f'<g transform="rotate({-12 - 75 * arm} 150 -625)">' + P("M128,-650 Q190,-650 196,-560 L190,-330 Q165,-312 140,-330 Z", "url(#teeG)")
+             + C(166, -318, 40, "url(#skinG)") + "</g>")
+    g.append('<g transform="rotate(10 -150 -625)">' + P("M-128,-650 Q-190,-650 -196,-560 L-190,-330 Q-165,-312 -140,-330 Z", "url(#teeG)")
+             + C(-166, -318, 40, "url(#skinG)") + "</g>")
+    g.append(P("M-42,-735 L42,-735 L46,-660 Q0,-645 -46,-660 Z", "url(#skinG)"))               # neck
+    # head
+    g.append(P("M-178,-880 Q-180,-700 -60,-668 Q0,-655 60,-668 Q180,-700 178,-880 Q170,-1010 0,-1015 Q-170,-1010 -178,-880 Z", "url(#skinG)"))
+    g.append(_shadow("M100,-1000 Q178,-960 178,-880 Q180,-720 70,-672 Q150,-760 140,-880 Q140,-960 100,-1000 Z"))
+    for sx in (-1, 1):
+        g.append(P(f"M{sx * 170},-900 Q{sx * 222},-905 {sx * 214},-840 Q{sx * 208},-790 {sx * 172},-800 Z", "url(#skinG)"))
+        g.append(f'<path d="M{sx * 188},-880 Q{sx * 205},-850 {sx * 188},-820" stroke="#B57E62" stroke-width="5" fill="none"/>')
+    for k in range(5): g.append(P(f"M{-176 + k * 8},-935 l-14,{30 + k * 6} l22,-8 Z", "#4A3224", 3))  # sideburn tufts
+    for k in range(5): g.append(P(f"M{176 - k * 8},-935 l14,{30 + k * 6} l-22,-8 Z", "#4A3224", 3))
+    # cap
+    g.append(P("M-186,-930 Q-182,-1098 0,-1105 Q182,-1098 186,-930 Q0,-955 -186,-930 Z", "url(#capG)"))
+    g.append('<path d="M-150,-1040 Q-60,-1090 40,-1085" stroke="#FFC0DA" stroke-width="12" fill="none" stroke-linecap="round" opacity="0.8"/>')  # highlight
+    g.append(P("M-60,-948 Q110,-985 268,-930 Q150,-890 -60,-912 Z", "#E04A8C"))
+    g.append(R(-110, -1035, 210, 60, "#FFFFFF", 14, 5))
+    g.append('<text x="-5" y="-1002" text-anchor="middle" dominant-baseline="middle" font-family="Inter Display" font-weight="900" font-size="40" fill="#D23F82">DEYKUN</text>')
+    # face
+    g.append(eyes(-72, 72, -860, 36, look, blink, expr))
+    if not blink and expr not in ("shock", "panic"):
+        for x in (-72, 72): g.append(f'<path d="M{x - 40},-878 Q{x},-905 {x + 40},-878" fill="url(#skinG)" stroke="{OUT}" stroke-width="6"/>')  # upper lids
+    g.append(brows(-72, 72, -925, 42, expr))
+    g.append(E(-118, -795, 30, 17, "#F29A9A", 0).replace('fill="#F29A9A"', 'fill="#F29A9A" opacity="0.7"'))
+    g.append(E(118, -795, 30, 17, "#F29A9A", 0).replace('fill="#F29A9A"', 'fill="#F29A9A" opacity="0.7"'))
+    g.append(P("M-4,-860 Q22,-805 -14,-796 Q-24,-800 -20,-806", "none", 6))
+    for k in range(18): g.append(C(-60 + (k * 23) % 120, -735 + (k * 7) % 30, 2.5, "#B88A70", 0))      # stubble
+    g.append(mouth(0, -752, mouth_open, expr, 38))
+    g.append('<path d="M-178,-880 Q-180,-700 -60,-668" stroke="#FFD9A8" stroke-width="6" fill="none" opacity="0.7"/>')   # warm rim light
+    g.append("</g>")
+    return "".join(g)
+
+
+def klod(cx, cy, s=1.0, mouth_open=0.0, expr="neutral", blink=False, look=(0, 0), ear=0.0):
+    dark = "#9E3B26"
+    g = [f'<g transform="translate({cx},{cy}) scale({s})">']
+    g.append(E(0, 6, 240, 28, "#000", 0).replace('fill="#000"', 'fill="#000" opacity="0.25"'))
+    for x in (-150, -70, 70, 150):
+        g.append(R(x - 30, -185, 60, 185, "#B9472F", 16)); g.append(R(x - 34, -24, 68, 26, "#5A2418", 10, 5))   # legs + hooves
+    g.append(P("M-240,-150 Q-262,-480 -60,-530 Q130,-570 238,-478 Q285,-300 240,-150 Q0,-120 -240,-150 Z", "url(#klodG)"))
+    g.append(_shadow("M120,-540 Q238,-478 260,-330 Q262,-200 240,-150 Q160,-136 110,-138 Q210,-300 120,-540 Z"))
+    for k in range(9): g.append(P(f"M{-120 + k * 30},-528 q10,-50 22,-4", dark, 5))                       # mane tufts
+    for k in range(14):                                                                                     # fur strokes
+        x = -200 + (k * 67) % 380; y = -460 + (k * 41) % 260
+        g.append(f'<path d="M{x},{y} q8,-10 16,0" stroke="#C8553A" stroke-width="5" fill="none"/>')
+    for sx in (-1, 1):
+        g.append(f'<g transform="rotate({sx * (8 + 18 * ear)} {sx * 150} -475)">' + P(f"M{sx * 118},-470 L{sx * 196},-575 L{sx * 214},-448 Z", "#C8553A")
+                 + P(f"M{sx * 140},-478 L{sx * 192},-548 L{sx * 200},-468 Z", "#F49A82", 0) + "</g>")
+    for k in range(8):
+        a = k * math.pi / 4
+        g.append(f'<line x1="{18 * math.cos(a)}" y1="{-432 + 18 * math.sin(a)}" x2="{50 * math.cos(a)}" y2="{-432 + 50 * math.sin(a)}" stroke="#FFF1E4" stroke-width="14" stroke-linecap="round"/>')
+    g.append(eyes(-88, 88, -355, 32, look, blink, expr, "#141414")); g.append(brows(-88, 88, -405, 34, expr))
+    g.append(E(-155, -292, 30, 17, "#FF9AA2", 0).replace('fill="#FF9AA2"', 'fill="#FF9AA2" opacity="0.7"'))
+    g.append(E(155, -292, 30, 17, "#FF9AA2", 0).replace('fill="#FF9AA2"', 'fill="#FF9AA2" opacity="0.7"'))
+    g.append(E(0, -262, 100, 66, "url(#snoutG)")); g.append(E(-34, -262, 15, 22, "#5A1C12", 0)); g.append(E(34, -262, 15, 22, "#5A1C12", 0))
+    g.append('<path d="M-60,-300 Q-20,-318 20,-310" stroke="#FFE1D6" stroke-width="8" fill="none" opacity="0.8" stroke-linecap="round"/>')   # snout highlight
+    for sx in (-1, 1): g.append(P(f"M{sx * 108},-222 q{sx * 22},-34 {sx * 4},-70 q{sx * -4},26 {sx * -16},48 Z", "#FFF6E6", 5))
+    g.append(mouth(0, -185, mouth_open, expr, 44))
+    g.append('<path d="M-240,-150 Q-262,-480 -60,-530" stroke="#FFD9A8" stroke-width="7" fill="none" opacity="0.6"/>')   # rim light
+    g.append("</g>")
+    return "".join(g)
+
+
 def bubble_caption(txt, y=1700):
     w = 22 * len(txt) + 60
     return (f'<rect x="{540 - w / 2}" y="{y - 38}" width="{w}" height="76" rx="18" fill="#1B1B22" opacity="0.88"/>'
@@ -179,7 +276,7 @@ def paper(img, seed=1, amount=10):
     return Image.fromarray(np.clip(a + n, 0, 255).astype(np.uint8))
 
 
-def pixelate(img, factor=4, colors=48):
+def pixelate(img, factor=6, colors=80):
     """HD pixel-art look (like @tony.shev.ai): downscale, limit palette, upscale with hard pixels."""
     from PIL import Image
     w, h = img.size
@@ -200,7 +297,7 @@ def chat_pill(txt, x=1040, y=180, accent="#E8806A", avatar="К"):
 if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] == "pixel":
     import io, cairosvg
     from PIL import Image
-    body = (room(0) + ruslan(380, 1740, 1.0, 0.5, "angry", look=(0, 1), arm=0.2) + klod(830, 1640, 0.8, 0.0, "smug", look=(-1, 0))
+    body = (room(0) + ruslan(420, 2350, 1.75, 0.55, "angry", look=(1, 0), arm=0.1) + klod(900, 1830, 0.75, 0.0, "smug", look=(-1, 0))
             + chat_pill("Опять списали 20 долларов!", avatar="Р", accent="#D9606A"))
     img = Image.open(io.BytesIO(cairosvg.svg2png(bytestring=grade(body).encode())))
     pixelate(img).save("drawn/demo_pixel.png"); print("drawn/demo_pixel.png")
@@ -208,6 +305,6 @@ if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] == "pixel":
 if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] == "demo":
     import io, cairosvg
     from PIL import Image
-    body = kitchen(0) + klod(820, 1640, 0.9, 0.0, "smug", look=(-1, 0)) + ruslan(330, 1720, 0.95, 0.6, "shock", look=(1, 0), arm=0.6) + bubble_caption("Клод, а где мои пельмени?!")
+    body = kitchen(0) + klod(820, 1640, 0.9, 0.0, "smug", look=(-1, 0)) + ruslan(330, 1720, 0.95, 0.6, "shock", look=(1, 0), arm=0.0) + bubble_caption("Клод, а где мои пельмени?!")
     img = Image.open(io.BytesIO(cairosvg.svg2png(bytestring=grade(body).encode())))
     paper(img).save("drawn/demo.png"); print("drawn/demo.png")
