@@ -4,7 +4,7 @@ otherwise falls back to likes + comments. Usage: python3 reels/analytics.py"""
 import datetime as dt, json, os, re, urllib.request, urllib.error, urllib.parse
 HERE = os.path.dirname(os.path.abspath(__file__))
 IG = json.load(open(os.path.join(HERE, "ig_account.json")))["ig_user_id"]
-API = "https://graph.facebook.com/v21.0"
+API = "https://graph.facebook.com/v24.0"
 
 
 def get(path, params):

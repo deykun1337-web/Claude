@@ -13,8 +13,8 @@ Facebook Page, and the token has instagram_basic + instagram_content_publish + p
 import json, os, sys, time
 import urllib.request, urllib.parse, urllib.error
 
-API = "https://graph.facebook.com/v21.0"
-RUPLOAD = "https://rupload.facebook.com/ig-api-upload/v21.0"
+API = "https://graph.facebook.com/v24.0"
+RUPLOAD = "https://rupload.facebook.com/ig-api-upload/v24.0"
 STATE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ig_account.json")
 
 
@@ -56,9 +56,13 @@ def post(video, caption_file, cover_ms=1500, trial=False, story=False):
     if story:
         c = req("POST", f"{API}/{uid}/media", {"media_type": "STORIES", "upload_type": "resumable"})
     else:
-      c = req("POST", f"{API}/{uid}/media", {"media_type": "REELS", "upload_type": "resumable", "caption": caption,
-                                           "share_to_feed": "true", "thumb_offset": str(cover_ms),
-                                           **({"trial_params": json.dumps({"graduation_strategy": "MANUAL"})} if trial else {})})
+      if trial:  # trial reel: JSON body with a trial_params OBJECT (v23+); shown to non-followers only
+        c = req("POST", f"{API}/{uid}/media", data=json.dumps({"media_type": "REELS", "upload_type": "resumable", "caption": caption,
+                                                              "thumb_offset": cover_ms, "trial_params": {"graduation_strategy": "MANUAL"}}).encode(),
+                headers={"Content-Type": "application/json"})
+      else:
+        c = req("POST", f"{API}/{uid}/media", {"media_type": "REELS", "upload_type": "resumable", "caption": caption,
+                                               "share_to_feed": "true", "thumb_offset": str(cover_ms)})
     cid = c["id"]
     print("container", cid, flush=True)
     # 2) upload the bytes

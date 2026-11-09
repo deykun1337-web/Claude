@@ -12,13 +12,13 @@ Usage:
   python3 reels/recycle.py plan                       # list candidates and pending deletions (no changes)
   python3 reels/recycle.py next                       # download the best candidate → reels/state/next.mp4 + prints its caption
   python3 reels/recycle.py post <caption_trial.txt>   # uniq + publish next.mp4 as a trial reel, remember the pair
-  python3 reels/recycle.py cleanup [--dry]            # delete originals whose trial already did better
+  python3 reels/recycle.py cleanup                     # list weak originals for manual deletion (API can't delete) → reels/TO_DELETE.md
 """
 import datetime as dt, json, os, re, subprocess, sys, urllib.request, urllib.error
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 IG = json.load(open(os.path.join(HERE, "ig_account.json")))["ig_user_id"]
-API = "https://graph.facebook.com/v21.0"
+API = "https://graph.facebook.com/v24.0"
 STATE = os.path.join(HERE, "state", "recycle.json")
 ALLOW = os.path.join(HERE, "recycle_allow.txt")
 ERA = dt.datetime(2026, 11, 7, tzinfo=dt.timezone.utc)
@@ -114,13 +114,12 @@ if __name__ == "__main__":
         for f in (src, dst): os.remove(f)
         print("recycled", nx["permalink"], "→", mm.group(2))
     elif cmd == "cleanup":
-        dry = "--dry" in sys.argv
-        for p, o, t in to_delete(media(), s):
-            if dry: print("would delete", o["permalink"]); continue
-            try:
-                req("DELETE", o["id"]); p["deleted"] = True; s["deleted"].append(o["permalink"]); print("deleted", o["permalink"])
-            except RuntimeError as e:
-                print("delete failed (API may not allow deleting this media):", e)
-        save(s)
+        # The Graph API token cannot delete media (Meta returns #10), so weak originals go to a list Ruslan deletes by hand.
+        todo = [o["permalink"] for p, o, t in to_delete(media(), s) if not p.get("listed")]
+        for p, o, t in to_delete(media(), s): p["listed"] = True
+        path = os.path.join(HERE, "TO_DELETE.md")
+        old = open(path, encoding="utf-8").read() if os.path.exists(path) else "# Удалить вручную (их пробные копии уже набрали больше)\n\n"
+        with open(path, "w", encoding="utf-8") as f: f.write(old + "".join(f"- {u}\n" for u in todo))
+        save(s); print("to delete by hand:", len(todo))
     else:
         print(__doc__)

@@ -16,7 +16,7 @@ Usage: python3 reels/ig_bot.py whoami | run [--dry]
 """
 import json, os, random, re, sys, time, urllib.request, urllib.parse, urllib.error
 
-API = "https://graph.facebook.com/v21.0"
+API = "https://graph.facebook.com/v24.0"
 IG = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "ig_account.json")))["ig_user_id"]
 HERE = os.path.dirname(os.path.abspath(__file__))
 STATE = os.path.join(HERE, "state", "ig.json")
