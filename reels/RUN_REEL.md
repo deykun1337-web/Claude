@@ -11,10 +11,20 @@
 4. `python3 reels/ig_post.py whoami` — проверить доступ к Instagram (токен подставляет прокси; ничего не искать в переменных).
 5. Параллельно могут работать другие запуски: делай свой проект в НОВОЙ папке `<slug>/` и `klod3d/*_<slug>.py`, чужие файлы не трогай. Перед push — `git pull --rebase`.
 
+## 0b. Исследование и аналитика (≈10 мин, ДО выбора темы)
+1. `python3 reels/analytics.py` → прочитай `reels/ANALYTICS.md`: 3 лучших ролика — образец хука/темы/формата, 3 худших — не повторять.
+2. `pip install -q yt-dlp` (для скилла watch), затем `python3 reels/viral.py` — разберёт новые ссылки из `reels/IDEAS_INBOX.md` (Руслан кидает туда залетевшие рилсы @manohin_nocode, @codil.ya и др.). Открой `reels/viral/<код>/sheet.jpg` у 2–3 самых просмотренных и запиши в `reels/viral/data.json` поле "hook" (первая фраза/текст на экране), затем `python3 reels/viral.py --hooks && python3 .claude/skills/ig-viral/swipe.py reels/viral/captured.tsv --out reels/SWIPE.md`. Логику ранжирования (во сколько раз ролик обогнал медиану автора) и формулы хуков см. в `.claude/skills/ig-viral/SKILL.md` и `.claude/skills/ig-reel/`.
+3. Правило ig-viral: читаем публичные рилсы по ссылкам, НЕ парсим профили, не входим в Instagram за Руслана, берём формулу, а не видео.
+
 ## 1. Тема и формат
 - Прочитай `reels/LOG.md`, `reels/KEYWORDS.md`, `reels/REFERENCES.md`.
 - Тема: ПОЗНАВАТЕЛЬНОЕ про Claude (ИИ Anthropic): приёмы и промпты для жизни/работы, Claude Code, скиллы, автоматизация, как делаем мультики. Идеи — из форматов @manohin_nocode и @codil.ya (+ @lemelson_a, @zhilnikov_it) из REFERENCES.md: бери формат, подачу и тип хука, но сценарий, примеры и факты — свои. Не повторяй темы из LOG.md.
 - Факты (тарифы, функции, модели, сторонние репозитории, цифры) — только проверенные веб-поиском по первоисточнику (anthropic.com, claude.com, docs.claude.com, сам GitHub). Без финансовых/медицинских/юридических советов.
+- РУБРИКИ (серии смотрят подряд и подписываются): каждый ролик — выпуск одной из рубрик с номером (номер = предыдущий в LOG.md + 1), номер пиши в подписи и на обложке:
+  • «Клод решает #N» — скетч: жизненная проблема Руслана → Клод пишет сообщение/план;
+  • «Промпт дня #N» — один сильный промпт и что он делает (список или сплит-экран);
+  • «Claude Code за 30 секунд #N» — одна возможность Claude Code / автоматизации;
+  • «Как мы делаем мультики #N» — закулисье конвейера.
 - Формат — не такой, как в двух последних строках LOG.md:
   (а) скетч-диалог Руслан ↔ Клод с панчем (образец `dolg/`, `klod3d/dolg3d.py`, `compose_dolg.py` — чат-пузыри);
   (б) список «N вещей/шагов» с верхней UI-панелью (образец `spisok/`, `spisok3d.py`, `compose_spisok.py`);
@@ -47,10 +57,12 @@
 - 3–5 хештегов: #claude #нейросети #ии + 1–2 по теме.
 - Для пробного рилса — ДРУГАЯ формулировка хука и первых строк (тот же смысл и кодовое слово) → `caption_trial.txt`.
 
-## 6. Публикация
-1. `python3 reels/ig_post.py post <slug>/output/<slug>.mp4 <slug>/caption.txt --cover-ms <мс кадра с лицом/хуком>`.
-2. `python3 reels/uniq.py <slug>/output/<slug>.mp4 <slug>/output/<slug>_trial.mp4` (≈1 мин), затем
-   `python3 reels/ig_post.py post <slug>/output/<slug>_trial.mp4 <slug>/caption_trial.txt --cover-ms <другой кадр> --trial`.
+## 6. Публикация (обложки + A/B хуков + история + Telegram)
+1. Обложка-хук A для основного: `python3 reels/promo.py cover <slug>/output/<slug>.mp4 <slug>/output/<slug>_A.mp4 "ХУК A|ВТОРАЯ СТРОКА" --color yellow` (печатает 700 → это --cover-ms). Хук на обложке: 2 строки, ≤ 22 символа в строке, конкретно (цифра/боль/результат), номер рубрики можно в конце («#3»). Обложка стоит по центру на уровне груди — проверь кадр 0.7 с, что она не закрывает лицо и читается.
+2. `python3 reels/ig_post.py post <slug>/output/<slug>_A.mp4 <slug>/caption.txt --cover-ms 700`.
+3. Пробный = другой хук B (это A/B-тест): `python3 reels/uniq.py <slug>/output/<slug>.mp4 <slug>/output/<slug>_u.mp4 && python3 reels/promo.py cover <slug>/output/<slug>_u.mp4 <slug>/output/<slug>_trial.mp4 "ХУК B|…" --color pink`, затем `python3 reels/ig_post.py post <slug>/output/<slug>_trial.mp4 <slug>/caption_trial.txt --cover-ms 700 --trial`. Хуки A и B запиши в LOG.md — analytics покажет, какой тип хука выигрывает.
+4. История: `python3 reels/promo.py story <slug>/output/<slug>.mp4 <slug>/output/<slug>_story.mp4 <СЛОВО> <секунда самого яркого момента>` → `python3 reels/ig_post.py post <slug>/output/<slug>_story.mp4 <любой txt> --story`.
+5. Telegram (если есть TG_BOT_TOKEN): гайд `python3 reels/tg_bot.py post reels/guides/<СЛОВО>.md`, затем ролик `python3 reels/tg_bot.py video <slug>/output/<slug>.mp4 <slug>/tg.md` (tg.md: название рилса, 1–2 строки пользы, «гайд — постом выше»). Вечерний запуск дополнительно публикует «Промпт дня»: короткий пост с одним полезным промптом по теме дня (reels/tg/prompt_<дата>.md).
 3. Если Instagram отклонил запрос (401/403/блок) — не публиковать другими способами, не входить паролем; сохранить всё в репозиторий и написать в итоге, что нужен новый токен. Не публиковать повторно то, что уже вышло (проверь LOG.md и `GET /17841409120122863/media`).
 
 ## 6b. Перевыпуск старых слабых роликов (после своей публикации)

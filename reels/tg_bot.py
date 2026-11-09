@@ -11,6 +11,7 @@ Usage:
   python3 reels/tg_bot.py link                         # create/print the invite link with join requests
   python3 reels/tg_bot.py approve                      # approve all pending join requests (run hourly)
   python3 reels/tg_bot.py post <file.md>               # post a guide (Telegram HTML subset)
+  python3 reels/tg_bot.py video <file.mp4> <caption.md> # post the reel itself with a short text
   python3 reels/tg_bot.py clean <max_id>               # try to delete old posts 1..max_id
 """
 import json, os, re, sys, time, urllib.request, urllib.parse, urllib.error, uuid
@@ -103,6 +104,11 @@ if __name__ == "__main__":
         r = api("sendMessage", {"chat_id": chat(), "text": md_to_html(open(sys.argv[2], encoding="utf-8").read())[:4000], "parse_mode": "HTML",
                                 "link_preview_options": {"is_disabled": True}})
         print("posted", r["message_id"])
+    elif cmd == "video":
+        cap = md_to_html(open(sys.argv[3], encoding="utf-8").read())[:1000]
+        r = api("sendVideo", {"chat_id": chat(), "caption": cap, "parse_mode": "HTML", "supports_streaming": "true", "width": "1080", "height": "1920"},
+                {"video": sys.argv[2]})
+        print("posted video", r["message_id"])
     elif cmd == "clean":
         mx = int(sys.argv[2]); ok = 0
         for i in range(1, mx + 1):

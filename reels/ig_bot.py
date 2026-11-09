@@ -14,7 +14,7 @@ State (processed comment ids, people already served) lives in reels/state/ig.jso
 
 Usage: python3 reels/ig_bot.py whoami | run [--dry]
 """
-import json, os, re, sys, time, urllib.request, urllib.parse, urllib.error
+import json, os, random, re, sys, time, urllib.request, urllib.parse, urllib.error
 
 API = "https://graph.facebook.com/v21.0"
 IG = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "ig_account.json")))["ig_user_id"]
@@ -22,6 +22,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 STATE = os.path.join(HERE, "state", "ig.json")
 DRY = "--dry" in sys.argv
 OWNER = "deykun1337"
+PUBLIC = ["Отправил в Директ 📩", "Лови в сообщениях 👀", "Готово, проверь Директ ✅", "Уже в Директе 🐗"]
 
 
 def req(method, path, params=None, body=None):
@@ -91,6 +92,9 @@ def run():
                 send({"comment_id": c["id"]}, f"Привет! 👋 Гайд «{word}» уже готов.\n"
                                               f"1) Подпишись на @{OWNER}\n2) Ответь сюда «+» — и я сразу пришлю.")
                 st["people"].setdefault(c.get("username", c["id"]), {"word": word, "state": "asked", "t": time.time()}); n_c += 1
+                if not DRY:  # a short public reply under the comment also lifts the reel in recommendations
+                    try: req("POST", f"{c['id']}/replies", {"message": random.choice(PUBLIC)})
+                    except RuntimeError as e: print("public reply failed:", e)
             except RuntimeError as e: print("private reply failed:", e)
     # DMs: people who answered after the private reply
     conv = req("GET", f"{IG}/conversations", {"platform": "instagram", "fields": "participants,messages.limit(3){from,message,created_time}"}).get("data", [])
