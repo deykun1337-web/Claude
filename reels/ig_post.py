@@ -58,10 +58,13 @@ def post(video, caption_file, cover_ms=1500, trial=False, story=False):
     if story:
         c = req("POST", f"{API}/{uid}/media", {"media_type": "STORIES", "upload_type": "resumable"})
     else:
-      if trial:  # trial reel: JSON body with a trial_params OBJECT (v23+); shown to non-followers only
-        c = req("POST", f"{API}/{uid}/media", data=json.dumps({"media_type": "REELS", "upload_type": "resumable", "caption": caption,
+      if trial:  # trial reels only work via video_url (resumable upload silently publishes a regular reel)
+        url = public_url(video)
+        c = req("POST", f"{API}/{uid}/media", data=json.dumps({"media_type": "REELS", "video_url": url, "caption": caption,
                                                               "thumb_offset": cover_ms, "trial_params": {"graduation_strategy": "MANUAL"}}).encode(),
                 headers={"Content-Type": "application/json"})
+        print("container", c["id"], "(trial via video_url)", flush=True)
+        return finish(c["id"])
       else:
         c = req("POST", f"{API}/{uid}/media", {"media_type": "REELS", "upload_type": "resumable", "caption": caption,
                                                "share_to_feed": "true", "thumb_offset": str(cover_ms)})
@@ -71,6 +74,10 @@ def post(video, caption_file, cover_ms=1500, trial=False, story=False):
     with open(video, "rb") as fh:
         up = req("POST", f"{RUPLOAD}/{cid}", data=fh.read(), headers={"offset": "0", "file_size": str(size), "Content-Type": "application/octet-stream"}, timeout=600)
     print("upload", up, flush=True)
+    return finish(cid)
+
+
+def finish(cid):
     # 3) wait for processing
     for _ in range(60):
         st = req("GET", f"{API}/{cid}", {"fields": "status_code,status"})
@@ -81,11 +88,29 @@ def post(video, caption_file, cover_ms=1500, trial=False, story=False):
     else:
         raise SystemExit("processing timed out")
     # 4) publish
-    pub = req("POST", f"{API}/{uid}/media_publish", {"creation_id": cid})
+    pub = req("POST", f"{API}/{ig_user_id()}/media_publish", {"creation_id": cid})
     mid = pub["id"]
     link = req("GET", f"{API}/{mid}", {"fields": "permalink"}).get("permalink")
     print(json.dumps({"media_id": mid, "permalink": link}, ensure_ascii=False))
     return link
+
+
+def public_url(video):
+    """Commit+push the file and return its raw.githubusercontent URL (the repo deykun1337-web/Claude is public)."""
+    import subprocess
+    root = subprocess.check_output(["git", "rev-parse", "--show-toplevel"], cwd=os.path.dirname(os.path.abspath(video))).decode().strip()
+    rel = os.path.relpath(os.path.abspath(video), root)
+    branch = "claude/trusting-cray-jkn30e"
+    subprocess.run(["git", "add", rel], cwd=root, check=True)
+    subprocess.run(["git", "commit", "-qm", f"trial video {os.path.basename(rel)}"], cwd=root)
+    subprocess.run(["git", "pull", "-q", "--rebase", "origin", branch], cwd=root)
+    subprocess.run(["git", "push", "-q", "origin", branch], cwd=root, check=True)
+    url = f"https://raw.githubusercontent.com/deykun1337-web/Claude/{branch}/{urllib.parse.quote(rel)}"
+    for _ in range(12):  # raw CDN may lag a few seconds after push
+        try:
+            urllib.request.urlopen(urllib.request.Request(url, method="HEAD"), timeout=30); return url
+        except Exception: time.sleep(5)
+    raise SystemExit(f"public URL not reachable: {url}")
 
 
 if __name__ == "__main__":

@@ -63,7 +63,7 @@
 - Для пробного рилса — ДРУГАЯ формулировка хука и первых строк (тот же смысл и кодовое слово) → `caption_trial.txt`.
 
 ## 6. Публикация (обложки + A/B хуков + история + Telegram)
-⚠️ ПРОБНЫЕ РИЛСЫ ВРЕМЕННО ВЫКЛЮЧЕНЫ: через API они пока выходят обычными рилсами (дубли в ленте). Шаг 3 (пробный) и раздел 6b (перевыпуск) выполняй ТОЛЬКО если существует файл reels/state/TRIAL_OK. Иначе пропусти их и сделай только основной рилс, историю и Telegram.
+Пробные рилсы публикуются только через video_url: ig_post.py с --trial сам коммитит и пушит файл в публичный репозиторий и отдаёт Instagram ссылку raw.githubusercontent (загрузка файлом публикует обычный рилс). Флаг включения — reels/state/TRIAL_OK.
 1. Обложка-хук A для основного: `python3 reels/promo.py cover <slug>/output/<slug>.mp4 <slug>/output/<slug>_A.mp4 "ХУК A|ВТОРАЯ СТРОКА" --color yellow` (печатает 700 → это --cover-ms). Хук на обложке: 2 строки, ≤ 22 символа в строке, конкретно (цифра/боль/результат), номер рубрики можно в конце («#3»). Обложка стоит по центру на уровне груди — проверь кадр 0.7 с, что она не закрывает лицо и читается.
 2. `python3 reels/ig_post.py post <slug>/output/<slug>_A.mp4 <slug>/caption.txt --cover-ms 700`.
 3. Пробный = другой хук B (это A/B-тест): `python3 reels/uniq.py <slug>/output/<slug>.mp4 <slug>/output/<slug>_u.mp4 && python3 reels/promo.py cover <slug>/output/<slug>_u.mp4 <slug>/output/<slug>_trial.mp4 "ХУК B|…" --color pink`, затем `python3 reels/ig_post.py post <slug>/output/<slug>_trial.mp4 <slug>/caption_trial.txt --cover-ms 700 --trial`. Хуки A и B запиши в LOG.md — analytics покажет, какой тип хука выигрывает.
