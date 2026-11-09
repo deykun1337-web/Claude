@@ -2,3 +2,5 @@
 
 - https://www.instagram.com/reel/DfhMa8zgJmv/ — дубль (ушёл как обычный рилс вместо пробного)
 - https://www.instagram.com/reel/DfhMn1CjH2E/ — дубль (ушёл как обычный рилс вместо пробного)
+- https://www.instagram.com/reel/DfhQPRoAXBb/ — дубль (пробный не сработал)
+- https://www.instagram.com/reel/DfhQZqBkXFr/ — дубль (пробный не сработал)

@@ -53,6 +53,8 @@ def post(video, caption_file, cover_ms=1500, trial=False, story=False):
     caption = open(caption_file, encoding="utf-8").read().strip()
     size = os.path.getsize(video)
     # 1) container for a resumable Reel upload
+    if trial and not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "state", "TRIAL_OK")):
+        raise SystemExit("trial reels are disabled until reels/state/TRIAL_OK exists (API published them as regular reels)")
     if story:
         c = req("POST", f"{API}/{uid}/media", {"media_type": "STORIES", "upload_type": "resumable"})
     else:

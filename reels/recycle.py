@@ -100,6 +100,7 @@ if __name__ == "__main__":
         print(json.dumps({"orig": m["permalink"], "likes": m.get("like_count"), "caption": m.get("caption") or ""}, ensure_ascii=False))
         print("video:", out, "— watch a few frames, then write a NEW trial caption and run: recycle.py post <caption.txt>")
     elif cmd == "post":
+        if not os.path.exists(os.path.join(HERE, "state", "TRIAL_OK")): raise SystemExit("trial reels are disabled (reels/state/TRIAL_OK missing)")
         nx = s.get("next"); src = os.path.join(HERE, "state", "next.mp4")
         if not nx or not os.path.exists(src): raise SystemExit("run next first")
         dst = os.path.join(HERE, "state", "next_trial.mp4")
