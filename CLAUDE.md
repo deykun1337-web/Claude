@@ -24,3 +24,14 @@
 - Простой способ анимации: рисовать каждый кадр как SVG → `cairosvg` в PNG →
   `moviepy.ImageSequenceClip(..., fps=24)` → добавить звук → `write_videofile("out.mp4")`.
 - Готовые ролики класть в `output/`, временные кадры — во временную папку, не в репозиторий.
+
+## Экономия токенов: CodeGraph (обязательно)
+
+В репозитории настроен [CodeGraph](https://github.com/colbymchenry/codegraph) — локальный индекс кода (символы, вызовы, файлы).
+Перед тем как искать код через Grep/Glob/Read, **сначала спрашивай CodeGraph** — он сразу отдаёт нужные функции с исходником.
+
+- В начале сессии (если нет папки `.codegraph/`): `npx -y @colbymchenry/codegraph init -i .` (≈5 с), иначе `codegraph sync .`
+- MCP-сервер `codegraph` подключён в `.mcp.json` — используй его инструменты (`codegraph_explore`, `codegraph_node`, …), если они есть.
+- Без MCP — через Bash: `codegraph explore "<что ищешь>" .` · `codegraph node <имя_функции> .` · `codegraph query <символ> .`
+- Код, который выдал CodeGraph, повторно через Read не читать. Read — только для markdown/JSON/данных и когда CodeGraph не нашёл.
+- Телеметрия выключена (`CODEGRAPH_TELEMETRY=0`). Индекс `.codegraph/` не коммитить.

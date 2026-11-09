@@ -11,6 +11,7 @@
 - Длинные выводы команд обрезай (`| tail -5`).
 
 ## 0. Подготовка (≈5 мин)
+- Сначала: `npx -y @colbymchenry/codegraph init -i .` (индекс кода, ≈5 с). Дальше ищи код через `codegraph explore "..." .` / MCP codegraph, а не Grep+Read (см. CLAUDE.md) — это главная экономия токенов.
 1. Репозиторий deykun1337-web/claude, ветка `claude/trusting-cray-jkn30e`. Если его нет — `add_repo deykun1337-web/claude` (access push), клонировать; `git fetch origin claude/trusting-cray-jkn30e && git checkout claude/trusting-cray-jkn30e && git pull`.
 2. Проверить инструменты: `blender --version`, `fc-list | grep -c InterDisplay`. Если чего-то нет — `apt-get install -y blender xvfb libegl1 libegl-mesa0 libgl1-mesa-dri libgles2 fonts-inter fonts-jetbrains-mono` и `pip install moviepy pillow numpy cairosvg pydub edge-tts`.
 3. Текстуры (папка `klod3d/build/` не в git): `cd klod3d && python3 tex.py && python3 tex_kak.py && python3 tex_zak.py && python3 tex_ruslan2.py && python3 tex_v2.py && cd ..` (≈917 файлов в klod3d/build/tex).

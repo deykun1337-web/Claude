@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "codegraph": {
+      "command": "npx",
+      "args": ["-y", "@colbymchenry/codegraph", "serve", "--mcp", "--path", "."],
+      "env": { "CODEGRAPH_TELEMETRY": "0" }
+    }
+  }
+}
