@@ -13,7 +13,7 @@
 ## 0. Подготовка (≈5 мин)
 1. Репозиторий deykun1337-web/claude, ветка `claude/trusting-cray-jkn30e`. Если его нет — `add_repo deykun1337-web/claude` (access push), клонировать; `git fetch origin claude/trusting-cray-jkn30e && git checkout claude/trusting-cray-jkn30e && git pull`.
 2. Проверить инструменты: `blender --version`, `fc-list | grep -c InterDisplay`. Если чего-то нет — `apt-get install -y blender xvfb libegl1 libegl-mesa0 libgl1-mesa-dri libgles2 fonts-inter fonts-jetbrains-mono` и `pip install moviepy pillow numpy cairosvg pydub edge-tts`.
-3. Текстуры (папка `klod3d/build/` не в git): `cd klod3d && python3 tex.py && python3 tex_kak.py && python3 tex_zak.py && python3 tex_ruslan2.py && cd ..` (должно получиться ≈437 файлов в klod3d/build/tex).
+3. Текстуры (папка `klod3d/build/` не в git): `cd klod3d && python3 tex.py && python3 tex_kak.py && python3 tex_zak.py && python3 tex_ruslan2.py && python3 tex_v2.py && cd ..` (≈917 файлов в klod3d/build/tex).
 4. `python3 reels/ig_post.py whoami` — проверить доступ к Instagram (токен подставляет прокси; ничего не искать в переменных).
 5. Параллельно могут работать другие запуски: делай свой проект в НОВОЙ папке `<slug>/` и `klod3d/*_<slug>.py`, чужие файлы не трогай. Перед push — `git pull --rebase`.
 
