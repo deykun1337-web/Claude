@@ -5,7 +5,7 @@ into requests to graph.facebook.com / rupload.facebook.com (saved as a network s
 
 Usage:
   python3 reels/ig_post.py whoami                         # check token + find the IG business account id
-  python3 reels/ig_post.py post <video.mp4> <caption.txt> [--cover-ms 1500] [--trial] [--story] [--at HH:MM]   # --at = ждать до этого времени МСК; --trial = пробный рилс (только неподписчикам); --story = история (caption игнорируется)
+  python3 reels/ig_post.py post <video.mp4> <caption.txt> [--cover-ms 1500] [--trial] [--story] [--at HH:MM] [--comment file.txt]   # --comment = первый комментарий от нас; --at = ждать до этого времени МСК; --trial = пробный рилс (только неподписчикам); --story = история (caption игнорируется)
 
 Requirements on the account side: @deykun1337 is a Professional (Creator/Business) account linked to a
 Facebook Page, and the token has instagram_basic + instagram_content_publish + pages_show_list.
@@ -128,6 +128,11 @@ if __name__ == "__main__":
     elif len(sys.argv) >= 4 and sys.argv[1] == "post":
         cover = int(sys.argv[sys.argv.index("--cover-ms") + 1]) if "--cover-ms" in sys.argv else 1500
         if "--at" in sys.argv: wait_until(sys.argv[sys.argv.index("--at") + 1])
-        post(sys.argv[2], sys.argv[3], cover, trial="--trial" in sys.argv, story="--story" in sys.argv)
+        link = post(sys.argv[2], sys.argv[3], cover, trial="--trial" in sys.argv, story="--story" in sys.argv)
+        if "--comment" in sys.argv and link:  # first comment from us: keyword reminder + question (pin it by hand in the app)
+            txt = open(sys.argv[sys.argv.index("--comment") + 1], encoding="utf-8").read().strip()
+            mid = [m for m in (req("GET", f"{API}/{ig_user_id()}/media", {"fields": "id,permalink", "limit": 5}).get("data") or []) if m.get("permalink") == link]
+            if mid:
+                r = req("POST", f"{API}/{mid[0]['id']}/comments", {"message": txt}); print("first comment", r.get("id"))
     else:
         print(__doc__)

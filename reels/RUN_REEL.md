@@ -41,6 +41,14 @@
   (в) объяснялка с голограммами и реквизитом (образец `kakdelayu/`, `kak3d.py`, `compose_kak.py`);
   (г) сплит-экран: сверху анимированные экраны/интерфейс/схемы, снизу говорящий Руслан или Клод, сильный хук.
 
+## 2a. Режиссура v2 (ОБЯЗАТЕЛЬНО для новых роликов)
+- Персонажи: `exec(open("klod3d/chars_v2.py").read())` после шапки scene3d.py → `ruslan_v2(...)`, `klod_v2(...)`, каждый кадр `animate(C, t, face=..., gesture=..., talk=..., ...)`. Лица высокой чёткости: `python3 klod3d/tex_v2.py` (v2r_/v2k_<expr>_<vis>_<b>_<g>). **Клод — всегда кабан** (см. reels/LORE.md).
+- План: `import direct; D = direct.Director(S, E, SPK, WORDS, base.MOUTH)` → `D.viseme(t, spk)` (форма рта по буквам), `D.blink`, `D.gaze` (говорящий смотрит на собеседника и иногда в сторону), `D.gesture(t, spk)` (руки/голова на ударных словах), `D.shots(...)` — склейка на КАЖДОЕ предложение, чередование крупных планов, немая реакция слушающего после реплик с «!/?», общий план каждые ~4 реплики. Перед панчем — пауза 0.6–0.8 с.
+- Оформление: `import ui_kit as U` в compose → **субтитры ТОЛЬКО `U.calm_captions`** (белые, спокойные, Inter SemiBold, верхняя треть, без обводки — как у @manohin_nocode); плашки `U.chip`; финал `U.endcard(t, E[-1]+0.2, next_ep, СЛОВО, что пришлю, вопрос зрителю)` — последние ~3 с.
+- Холодный старт: в каждом 3-м ролике первые 1–2 с без слов и без субтитров (`cold_until=1.5`) — звук + действие, потом фраза.
+- Длина: скетч 40–60 с, «Как управлять…» 60–90 с (новый поворот/плашка каждые 3–5 с), список 35–50 с.
+- Вселенная и герои — `reels/LORE.md` (Кабаново, второстепенные звери-нейросети, рубрики с номерами, «В следующей серии»).
+
 ## 2. Герои и голос
 - Руслан Дейкун Кабанович: розовая кепка DEYKUN, доброе лицо без тату, белая футболка с золотой цепью, джинсы, 3D-нос (r2_* текстуры, сборка — как в dolg3d.py).
 - Клод-кабан: лососево-красное блочное тело, пятачок, клыки, кремовая искорка Claude на лбу.
@@ -70,7 +78,7 @@
 ## 6. Публикация (обложки + A/B хуков + история + Telegram)
 Пробные рилсы публикуются только через video_url: ig_post.py с --trial сам коммитит и пушит файл в публичный репозиторий и отдаёт Instagram ссылку raw.githubusercontent (загрузка файлом публикует обычный рилс). Флаг включения — reels/state/TRIAL_OK.
 1. Обложка-хук A для основного: `python3 reels/promo.py cover <slug>/output/<slug>.mp4 <slug>/output/<slug>_A.mp4 "ХУК A|ВТОРАЯ СТРОКА" --color yellow` (печатает 700 → это --cover-ms). Хук на обложке: 2 строки, ≤ 22 символа в строке, конкретно (цифра/боль/результат), номер рубрики можно в конце («#3»). Обложка стоит по центру на уровне груди — проверь кадр 0.7 с, что она не закрывает лицо и читается.
-2. `python3 reels/ig_post.py post <slug>/output/<slug>_A.mp4 <slug>/caption.txt --cover-ms 700`.
+2. Первый комментарий: файл <slug>/comment.txt — «Пиши <СЛОВО> — пришлю <что> 👇 А ты <вопрос по теме>?» (1–2 строки). Основной: `python3 reels/ig_post.py post <slug>/output/<slug>_A.mp4 <slug>/caption.txt --cover-ms 700 --at <слот> --comment <slug>/comment.txt` (в итоге напомни Руслану закрепить этот комментарий).
 3. Пробный = другой хук B (это A/B-тест): `python3 reels/uniq.py <slug>/output/<slug>.mp4 <slug>/output/<slug>_u.mp4 && python3 reels/promo.py cover <slug>/output/<slug>_u.mp4 <slug>/output/<slug>_trial.mp4 "ХУК B|…" --color pink`, затем `python3 reels/ig_post.py post <slug>/output/<slug>_trial.mp4 <slug>/caption_trial.txt --cover-ms 700 --trial`. Хуки A и B запиши в LOG.md — analytics покажет, какой тип хука выигрывает.
 4. История: `python3 reels/promo.py story <slug>/output/<slug>.mp4 <slug>/output/<slug>_story.mp4 <СЛОВО> <секунда самого яркого момента>` → `python3 reels/ig_post.py post <slug>/output/<slug>_story.mp4 <любой txt> --story`.
 5. Telegram (если есть TG_BOT_TOKEN): гайд `python3 reels/tg_bot.py post reels/guides/<СЛОВО>.md`, затем ролик `python3 reels/tg_bot.py video <slug>/output/<slug>.mp4 <slug>/tg.md` (tg.md: название рилса, 1–2 строки пользы, «гайд — постом выше»). Вечерний запуск дополнительно публикует «Промпт дня»: короткий пост с одним полезным промптом по теме дня (reels/tg/prompt_<дата>.md).
