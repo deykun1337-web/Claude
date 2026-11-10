@@ -89,6 +89,10 @@ def run():
             seen.add(c["id"]); st["comments"].append(c["id"])
             word = next((k for k in kw if re.search(rf"(?<!\w){k}(?!\w)", c.get("text", ""), re.I)), None)
             if not word: continue
+            try:   # never answer twice, even if the saved state was lost: check our own reply under the comment
+                reps = req("GET", f"{c['id']}/replies", {"fields": "username", "limit": 50}).get("data", [])
+                if any(r.get("username") == OWNER for r in reps): continue
+            except RuntimeError as e: print("replies check failed:", str(e)[:120])
             try:
                 if word == "КАБАНОВО":   # series «деревня подписчиков»: the house goes to followers
                     send({"comment_id": c["id"]}, f"Привет, сосед! 🏡 Записываю тебя в Кабаново.\n"
