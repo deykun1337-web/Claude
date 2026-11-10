@@ -1,14 +1,10 @@
 {
   "mcpServers": {
     "codegraph": {
-      "command": "npx",
+      "command": "sh",
       "args": [
-        "-y",
-        "@colbymchenry/codegraph",
-        "serve",
-        "--mcp",
-        "--path",
-        "."
+        "-c",
+        "command -v codegraph >/dev/null 2>&1 && exec codegraph serve --mcp --path . || exec npx -y @colbymchenry/codegraph serve --mcp --path ."
       ],
       "env": {
         "CODEGRAPH_TELEMETRY": "0"
