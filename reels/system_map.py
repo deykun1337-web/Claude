@@ -14,6 +14,7 @@ SCHEDULE = {
     "каждый час :56": {"trigger": "trig_01E5cwjyBb8xzWxzT1LLgXAr", "session": "session_01WpmoiKBjMrKAFzoyhtbbQE (Haiku, воркер автоответов)",
                        "does": "bash reels/autoreply.sh — кодовые слова, Директ, одобрение заявок TG, push состояния"},
     "пн 11:23": {"trigger": "trig_015Uu8u6jV1qcWzCvtj3w4r4", "session": "новая сессия (Sonnet)", "does": "reels/WEEKLY.md — недельный отчёт"},
+    "очередь": {"trigger": None, "session": "-", "does": "reels/queue/*.json — готовые ролики; queue_post.py publish публикует одной командой (экономия лимита)"},
     "каждые 5 мин": {"trigger": None, "session": "основная сессия (nohup)", "does": "reels/watch_loop.sh — то же, что autoreply, чаще; гибнет при перезапуске"},
     "ВЫКЛЮЧЕНЫ": ["trig_01Hh4GroitAXAdQ8cbEyJS65", "trig_011K2EVBCer5tAWqLyeBFt2K", "trig_012rt4D8sSRB6AhvDRqCUGQ1", "trig_01Ks1rAsWsC2omau8DSFyAYp"],
 }
@@ -22,6 +23,7 @@ WHY_WORKERS = ("Новые сессии от расписания не полу�
 
 # ---------------------------------------------------------------- конвейер ролика (RUN_REEL.md)
 PIPELINE = [
+    "СНАЧАЛА очередь: python3 reels/queue_post.py list → publish <am|pm> (готовые ролики reels/queue/*.json; держать запас 2)",
     "0. npx -y @colbymchenry/codegraph init -i . ; git pull ; текстуры/зависимости",
     "0b. идеи: reels/SWIPE.md, reels/IDEAS_INBOX.md, reels/REFERENCES.md, viral.py",
     "1. тема + кодовое слово (не занятое в reels/KEYWORDS.md)",
@@ -39,7 +41,8 @@ PIPELINE = [
 
 # ---------------------------------------------------------------- кодовые слова (бот reels/ig_bot.py читает reels/KEYWORDS.md)
 KEYWORDS = {"ДОЛГ": "dolg", "КАБАН": "kakdelayu/spisok", "АГЕНТЫ": "subagenty Dfh-nyLiS5r", "КАБАНОВО": "kabanovo DfiCDvLjv2Y (серия)",
-            "ЛИМИТ": "limit DfjlnuDge13", "БЭКАП": "«Клод, я удалил проект» Dfh-n-wjHGS"}
+            "ЛИМИТ": "limit DfjlnuDge13", "БЭКАП": "«Клод, я удалил проект» Dfh-n-wjHGS",
+            "ГРАФИКА": "grafika (в очереди)", "КОМАНДЫ": "komandy (в очереди)"}
 BOT_FLOW = ("коммент со словом → проверка, что мы ещё не отвечали (replies в Instagram) → личный ответ «подпишись и ответь +» + публичный "
             "«Отправил в Директ» → ответ «+» → is_user_follow_business → ссылка TG (заявка одобряется tg_bot.py approve). "
             "КАБАНОВО: участок/дом в следующей серии. Состояние reels/state/ig.json.")

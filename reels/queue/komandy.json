@@ -1,0 +1,6 @@
+{"slug": "komandy", "slot": "am", "order": 2, "style": 4, "word": "КОМАНДЫ",
+ "video_A": "komandy/output/komandy_A.mp4", "video": "komandy/output/komandy.mp4", "trial": "komandy/output/komandy_trial.mp4",
+ "caption": "komandy/caption.txt", "caption_trial": "komandy/caption_trial.txt", "comment": "komandy/comment.txt",
+ "tg": "komandy/tg.md", "guide": "reels/guides/КОМАНДЫ.md",
+ "keyword_row": "| КОМАНДЫ | komandy — «5 команд Claude Code» | guides/КОМАНДЫ.md | Шпаргалка Claude Code ⌨️ /init — файл правил проекта; /clear — чистый чат; /compact — сжать переписку; Esc Esc или /rewind — откат; Shift+Tab — режимы; /model — выбрать модель; /resume — прошлый разговор; /agents — субагенты; @файл — дать файл; !команда — терминал. Полная версия — в нашем Telegram. |",
+ "log": "5 команд Claude Code (/init, /clear, /compact, Esc Esc, Shift+Tab) | стиль 4 светлый, 60 fps | 36,9 с"}
