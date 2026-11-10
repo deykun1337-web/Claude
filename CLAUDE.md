@@ -33,5 +33,6 @@
 - В начале сессии (если нет папки `.codegraph/`): `npx -y @colbymchenry/codegraph init -i .` (≈5 с), иначе `codegraph sync .`
 - MCP-сервер `codegraph` подключён в `.mcp.json` — используй его инструменты (`codegraph_explore`, `codegraph_node`, …), если они есть.
 - Без MCP — через Bash: `codegraph explore "<что ищешь>" .` · `codegraph node <имя_функции> .` · `codegraph query <символ> .`
+- **Карта всей системы** (расписания, воркеры, конвейер, кодовые слова, стили, серия, запреты, доступы) — `reels/system_map.py`: спроси `codegraph explore "system_map" .` в начале любой задачи. Изменил систему — обнови карту.
 - Код, который выдал CodeGraph, повторно через Read не читать. Read — только для markdown/JSON/данных и когда CodeGraph не нашёл.
 - Телеметрия выключена (`CODEGRAPH_TELEMETRY=0`). Индекс `.codegraph/` не коммитить.
