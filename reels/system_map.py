@@ -69,6 +69,8 @@ ACCESS = {"Instagram Graph API": "токен как сетевой секрет 
           "репозиторий": "deykun1337-web/Claude ПУБЛИЧНЫЙ — секреты не коммитить",
           "сеть среды": "speech.platform.bing.com, trendsee.io, instagram, cdninstagram, api.telegram.org, polyhaven"}
 
+IG_BLOCK = "11.11: Meta закрыла API (code 200 «API access blocked») с ~18:00 10.11. Все запуски сперва reels/ig_check.sh; при блоке — стоп."
+
 # ---------------------------------------------------------------- ручные задачи Руслана
 OWNER_TODO = ["закреплять первый комментарий под новыми роликами", "удалить дубли из reels/TO_DELETE.md",
               "добавить разрешение instagram_manage_insights", "отозвать засвеченные в чате токены"]

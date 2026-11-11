@@ -11,6 +11,7 @@
 - Длинные выводы команд обрезай (`| tail -5`).
 
 ## 0. Подготовка (≈5 мин)
+- **Самый первый шаг:** `bash reels/ig_check.sh`. Если `IG_BLOCKED` — Instagram API закрыт Meta: ничего не делай (не рендерь, не публикуй), ответь одной строкой «IG API заблокирован, жду» и закончи. Руслан чинит доступ в developers.facebook.com.
 - **ОЧЕРЕДЬ ГОТОВЫХ РОЛИКОВ (сначала!):** `python3 reels/queue_post.py list`. Если там есть ролик для этого слота (am/pm) — `python3 reels/queue_post.py publish <am|pm>` (сам добавит слово в KEYWORDS, опубликует в 12:30/21:30 с первым комментарием, пробную копию или trial_later, Telegram, LOG, push). Новый ролик для публикации в этот запуск НЕ делай. Дальше — только перевыпуск (6b), «Промпт дня» вечером, и если лимит использования позволяет — сделай ОДИН новый ролик В ОЧЕРЕДЬ (reels/queue/<slug>.json, как grafika.json; слот = тип стиля: UI → am, персонажи → pm), чтобы в запасе всегда было 2 ролика. Если лимит на исходе — только публикация из очереди.
 - Сначала: `npx -y @colbymchenry/codegraph init -i .` (индекс кода, ≈5 с). Дальше ищи код через `codegraph explore "..." .` / MCP codegraph, а не Grep+Read (см. CLAUDE.md) — это главная экономия токенов.
 1. Репозиторий deykun1337-web/claude, ветка `claude/trusting-cray-jkn30e`. Если его нет — `add_repo deykun1337-web/claude` (access push), клонировать; `git fetch origin claude/trusting-cray-jkn30e && git checkout claude/trusting-cray-jkn30e && git pull`.
