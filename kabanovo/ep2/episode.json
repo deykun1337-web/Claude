@@ -1,0 +1,63 @@
+{
+ "timing": "/home/user/Claude/kabanovo/ep2/build/timing.json",
+ "houses": [
+  {
+   "nick": "grisha_pills",
+   "slot": 0
+  },
+  {
+   "nick": "enchantleses",
+   "slot": 1
+  },
+  {
+   "nick": "svinieushi",
+   "slot": 2
+  },
+  {
+   "nick": "ayunalexx",
+   "slot": 3
+  },
+  {
+   "nick": "dr.twikibot",
+   "slot": 4
+  },
+  {
+   "nick": "why253777",
+   "slot": 5
+  },
+  {
+   "nick": "d_mar1k",
+   "slot": 6
+  },
+  {
+   "nick": "scarmaks.s",
+   "slot": 7
+  },
+  {
+   "nick": "1knnv.1",
+   "slot": 8
+  },
+  {
+   "nick": "tholeenwakeup",
+   "slot": 9
+  },
+  {
+   "nick": "serloopsky",
+   "slot": 10
+  },
+  {
+   "nick": "anton_life_ai",
+   "slot": 11
+  }
+ ],
+ "ghosts": 3,
+ "shots": "ep2",
+ "popin": [
+  0.7,
+  0.22
+ ],
+ "label_size": 0.55,
+ "wish_site": "здесь — ваше желание?",
+ "klod_expr": "neutral",
+ "episode": 2
+}

@@ -193,7 +193,7 @@ for i, hd in enumerate(EP.get("houses", [])):
               mesh_obj("hr", prism, roofm[i % 3], (0, 0, 1.2), scale=(0.95, 0.95, 1.1)),
               mesh_obj("hwin", lambda bm: bmesh.ops.create_cube(bm, size=1), winm, (0, -0.75, 0.65), scale=(0.3, 0.02, 0.3))):
         o.parent = g
-    houses.append(g); labels.append(label(hd["nick"], (x, y, z + 2.6)))
+    houses.append(g); labels.append(label(hd["nick"], (x, y, z + 2.6), EP.get("label_size", 0.42)))
 for j in range(EP.get("ghosts", 0)):
     x, y, a = SLOTS[len(houses) + j]; z = height(x, y)
     g = bpy.data.objects.new("ghost", None); bpy.context.collection.objects.link(g); g.location = (x, y, z); g.rotation_euler = (0, 0, a)
@@ -201,6 +201,16 @@ for j in range(EP.get("ghosts", 0)):
               mesh_obj("gr", prism, ghostm, (0, 0, 1.2), scale=(0.95, 0.95, 1.1))):
         o.parent = g
     ghosts.append(g); labels.append(label("твой ник?", (x, y, z + 2.6)))
+
+WS = None   # construction site for the viewers' wish (episode 2+)
+if EP.get("wish_site"):
+    x, y, a = SLOTS[len(houses) + EP.get("ghosts", 0) + 1]; z = height(x, y); WS = (x, y, z)
+    dirt = flat_mat("dirt", "#7A5A3A", 0.95)
+    mesh_obj("site", lambda bm: bmesh.ops.create_grid(bm, x_segments=1, y_segments=1, size=1.6), dirt, (x, y, z + 0.03))
+    for dx in (-1.6, 0, 1.6):
+        for dy in (-1.6, 1.6): mesh_obj("post", lcyl(0.06, 0.9, 6), log, (x + dx, y + dy, z + 0.45))
+    for dy in (-1.6, 1.6): mesh_obj("rail", lcyl(0.04, 3.2, 6), log, (x, y + dy, z + 0.75), rot=(0, math.radians(90), 0))
+    labels.append(label(EP["wish_site"], (x, y, z + 2.2), EP.get("label_size", 0.42)))
 
 # ---------------------------------------------------------------- camera
 c = bpy.data.cameras.new("cam"); c.sensor_fit = "VERTICAL"; c.sensor_height = 24; c.lens = 30; c.clip_end = 400
@@ -217,8 +227,28 @@ def ease(x): x = max(0.0, min(1.0, x)); return x * x * (3 - 2 * x)
 def lerp(a, b, k): return tuple(a[i] + (b[i] - a[i]) * k for i in range(3))
 
 
+def shot2(t):
+    """episode 2+: high view, houses pop in → slow high orbit over nick plates → Klod by the fire → wish site → wide final"""
+    def orbit(k):
+        ang = -0.95 + 1.9 * k; r = 13.5 - 1.5 * k
+        return (r * math.cos(ang), r * math.sin(ang), 21 - 3 * k)
+    if t < L[1] - 0.2:
+        k = ease(t / (L[1] - 0.2)); return lerp((9.5, -13.5, 25), orbit(0), k), (0, 0, 0.5), 25
+    if t < L[3] - 0.3:
+        k = (t - (L[1] - 0.2)) / (L[3] - L[1] - 0.1); return orbit(k), (0, 0, 0.5), 25
+    if t < L[4] - 0.3:
+        k = ease((t - (L[3] - 0.3)) / 1.8)
+        return lerp(orbit(1), (1.0, -5.8, 1.85), k), lerp((0, 0, 0.5), (-0.62, -0.85, 0.5), k), 25 + 15 * k
+    x, y, z = WS or (0, 0, 0); cam = (x + 5.0, y - 10.0, z + 13.0); tgt = (x, y, z + 1.6)
+    if t < L[5] - 0.3:
+        k = ease((t - (L[4] - 0.3)) / 1.8); return lerp((1.0, -5.8, 1.85), cam, k), lerp((-0.62, -0.85, 0.5), tgt, k), 40 - 8 * k
+    k = ease((t - (L[5] - 0.3)) / 3.5)
+    return lerp(cam, (8, -12, 27), k), lerp(tgt, (0, 0, 0.5), k), 32 - 7 * k
+
+
 def shot(t):
     """returns camera position, target, lens for the episode-1 storyboard"""
+    if EP.get("shots") == "ep2": return shot2(t)
     K1 = ((0, 0, 0.6), (1.4, -0.4, 0.6))
     if t < L[1] - 0.2:        # wide aerial orbit over the (future) village
         a = -1.0 + 0.11 * t; r = 30 - 0.6 * t
@@ -250,7 +280,12 @@ for f in FRAMES:
     # ghosts fade away when the camera reaches the fire ("а пока тут только костёр")
     ga = 0.32 * (1 - ease((t - (L[2] + 0.4)) / 1.2))
     ghostm.node_tree.nodes["Principled BSDF"].inputs["Alpha"].default_value = max(0.0, ga)
-    for lb in labels[len(houses):]: lb.scale = (1, 1, 1) if ga > 0.02 else (0, 0, 0)
+    for lb in labels[len(houses):len(houses) + len(ghosts)]: lb.scale = (1, 1, 1) if ga > 0.02 else (0, 0, 0)
     for g in ghosts: g.scale = (1, 1, 1) if ga > 0.01 else (0, 0, 0)
-    animate_smooth(K, t, face={"expr": "happy", "vis": 0, "b": 1 if (t % 3.7) < 0.12 else 0, "g": "c"}, gesture=0.2 * (0.5 + 0.5 * math.sin(t)))
+    if EP.get("popin"):     # houses spring up one by one
+        t0, stg = EP["popin"]
+        for i, g in enumerate(houses):
+            k = max(0.0, min(1.0, (t - t0 - i * stg) / 0.45)); bk = 1 + 2.2 * (k - 1) ** 3 + 1.2 * (k - 1) ** 2 if k > 0 else 0
+            g.scale = (max(0.001, bk),) * 3; labels[i].scale = (1, 1, 1) if k > 0.6 else (0, 0, 0)
+    animate_smooth(K, t, face={"expr": EP.get("klod_expr", "happy"), "vis": 0, "b": 1 if (t % 3.7) < 0.12 else 0, "g": "c"}, gesture=0.2 * (0.5 + 0.5 * math.sin(t)))
     sc.render.filepath = f"{OUT}/{f:05d}.png"; bpy.ops.render.render(write_still=True)
