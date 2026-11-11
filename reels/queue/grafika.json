@@ -1,6 +1,0 @@
-{"slug": "grafika", "slot": "am", "order": 1, "style": 10, "word": "ГРАФИКА",
- "video_A": "grafika/output/grafika_A.mp4", "video": "grafika/output/grafika.mp4", "trial": "grafika/output/grafika_trial.mp4",
- "caption": "grafika/caption.txt", "caption_trial": "grafika/caption_trial.txt", "comment": "grafika/comment.txt",
- "tg": "grafika/tg.md", "guide": "reels/guides/ГРАФИКА.md",
- "keyword_row": "| ГРАФИКА | grafika — «Этот ролик собран без монтажёра» | guides/ГРАФИКА.md | Держи мой промпт для моушн-графики кодом 🐗 Опиши Claude Code стиль (фон, шрифт, цвет-акцент, 60 fps), попроси рисовать каждый кадр как SVG → PNG и собрать ffmpeg, озвучку через edge-tts и свою музыку кодом. Сначала — 6 контрольных кадров, потом рендер. Полный промпт и правки — в нашем Telegram. |",
- "log": "Этот ролик собран без монтажёра — моушн кодом | стиль 10 HUD-лайм, 60 fps | 27,6 с"}
