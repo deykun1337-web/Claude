@@ -76,7 +76,7 @@ def title(t):
     a = M.gone(t, L[1][0] - 0.5, 0.4)          # hook, visible from frame 0
     if a > 0.01:
         n = min(12, int(max(0, t - 0.7) / 0.22) + (1 if t > 0.7 else 0))
-        out += f'<g opacity="{a:.2f}">' + tplate(250, "КАБАНОВО · ДЕНЬ 2", 78, 900) + tplate(372, f"+{n} ДОМОВ", 64, 900) + "</g>"
+        out += f'<g opacity="{a:.2f}">' + tplate(250, "КАБАНОВО · ДЕНЬ 2", 78, 900) + tplate(372, "+12 ДОМОВ", 64, 900) + "</g>"
     t5 = L[5][0]; b = M.appear(t, t5 + 0.1, 0.5)
     if b > 0.01:
         rows = "".join(f'<text x="{300 if i % 2 == 0 else 780}" y="{330 + (i // 2) * 52}" text-anchor="middle" font-family="Inter" font-size="34" font-weight="700" fill="#FFFFFF">@{n}</text>'

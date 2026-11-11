@@ -4,9 +4,125 @@
    "n": 1,
    "media_id": "18037072073855182",
    "date": "2026-11-09"
+  },
+  {
+   "n": 2,
+   "media_id": null,
+   "date": "2026-11-11",
+   "manual": true,
+   "note": "выложил Руслан вручную; media_id добавить, когда вернётся API"
   }
  ],
- "residents": {},
+ "residents": {
+  "grisha_pills": {
+   "ep": 1,
+   "t": null,
+   "likes": 0,
+   "house": 0,
+   "built_ep": 2,
+   "follows": null,
+   "note": "дом выдан вручную во 2-й серии (API был заблокирован, подписку не проверяли)"
+  },
+  "enchantleses": {
+   "ep": 1,
+   "t": null,
+   "likes": 0,
+   "house": 1,
+   "built_ep": 2,
+   "follows": null,
+   "note": "дом выдан вручную во 2-й серии (API был заблокирован, подписку не проверяли)"
+  },
+  "svinieushi": {
+   "ep": 1,
+   "t": null,
+   "likes": 0,
+   "house": 2,
+   "built_ep": 2,
+   "follows": null,
+   "note": "дом выдан вручную во 2-й серии (API был заблокирован, подписку не проверяли)"
+  },
+  "ayunalexx": {
+   "ep": 1,
+   "t": null,
+   "likes": 0,
+   "house": 3,
+   "built_ep": 2,
+   "follows": null,
+   "note": "дом выдан вручную во 2-й серии (API был заблокирован, подписку не проверяли)"
+  },
+  "dr.twikibot": {
+   "ep": 1,
+   "t": null,
+   "likes": 0,
+   "house": 4,
+   "built_ep": 2,
+   "follows": null,
+   "note": "дом выдан вручную во 2-й серии (API был заблокирован, подписку не проверяли)"
+  },
+  "why253777": {
+   "ep": 1,
+   "t": null,
+   "likes": 0,
+   "house": 5,
+   "built_ep": 2,
+   "follows": null,
+   "note": "дом выдан вручную во 2-й серии (API был заблокирован, подписку не проверяли)"
+  },
+  "d_mar1k": {
+   "ep": 1,
+   "t": null,
+   "likes": 0,
+   "house": 6,
+   "built_ep": 2,
+   "follows": null,
+   "note": "дом выдан вручную во 2-й серии (API был заблокирован, подписку не проверяли)"
+  },
+  "scarmaks.s": {
+   "ep": 1,
+   "t": null,
+   "likes": 0,
+   "house": 7,
+   "built_ep": 2,
+   "follows": null,
+   "note": "дом выдан вручную во 2-й серии (API был заблокирован, подписку не проверяли)"
+  },
+  "1knnv.1": {
+   "ep": 1,
+   "t": null,
+   "likes": 0,
+   "house": 8,
+   "built_ep": 2,
+   "follows": null,
+   "note": "дом выдан вручную во 2-й серии (API был заблокирован, подписку не проверяли)"
+  },
+  "tholeenwakeup": {
+   "ep": 1,
+   "t": null,
+   "likes": 0,
+   "house": 9,
+   "built_ep": 2,
+   "follows": null,
+   "note": "дом выдан вручную во 2-й серии (API был заблокирован, подписку не проверяли)"
+  },
+  "serloopsky": {
+   "ep": 1,
+   "t": null,
+   "likes": 0,
+   "house": 10,
+   "built_ep": 2,
+   "follows": null,
+   "note": "дом выдан вручную во 2-й серии (API был заблокирован, подписку не проверяли)"
+  },
+  "anton_life_ai": {
+   "ep": 1,
+   "t": null,
+   "likes": 0,
+   "house": 11,
+   "built_ep": 2,
+   "follows": null,
+   "note": "дом выдан вручную во 2-й серии (API был заблокирован, подписку не проверяли)"
+  }
+ },
  "wishes": [],
  "built": [],
  "followers": {}
